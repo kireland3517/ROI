@@ -1,0 +1,63 @@
+{
+  "artifact_path": "C:\\Users\\kirel\\ROI Tool\\model_registry\\greenville_sc\\hedonic_ppsf_v0_1.json",
+  "model_id": "greenville_sc_hedonic_ppsf_v0_1",
+  "validated_at": "2026-06-03T12:42:17",
+  "overall_status": "PASS",
+  "checks": [
+    {
+      "name": "artifact_exists",
+      "status": "PASS",
+      "message": "Found artifact: C:\\Users\\kirel\\ROI Tool\\model_registry\\greenville_sc\\hedonic_ppsf_v0_1.json"
+    },
+    {
+      "name": "required_fields_present",
+      "status": "PASS",
+      "message": "All required fields present"
+    },
+    {
+      "name": "training_window_present",
+      "status": "PASS",
+      "message": "training_window includes start_date and end_date"
+    },
+    {
+      "name": "required_metrics_present",
+      "status": "PASS",
+      "message": "All required metrics present"
+    },
+    {
+      "name": "coefficients_non_empty",
+      "status": "PASS",
+      "message": "Found 34 coefficients"
+    },
+    {
+      "name": "feature_names_non_empty",
+      "status": "PASS",
+      "message": "Found 34 feature names"
+    },
+    {
+      "name": "coefficients_match_feature_names",
+      "status": "PASS",
+      "message": "coefficients keys match feature_names"
+    },
+    {
+      "name": "diagnostic_only_not_approved",
+      "status": "PASS",
+      "message": "diagnostic_only model is not approved for recommendations"
+    },
+    {
+      "name": "diagnostic_only_flag_false",
+      "status": "PASS",
+      "message": "approved_for_recommendations is false"
+    },
+    {
+      "name": "source_dataset_exists",
+      "status": "PASS",
+      "message": "Source dataset found: C:\\Users\\kirel\\ROI Tool\\regression\\data\\Greenville-Anderson-Greer_SC.csv"
+    },
+    {
+      "name": "modeling_dataset_exists",
+      "status": "PASS",
+      "message": "Modeling dataset found: C:\\Users\\kirel\\ROI Tool\\regression\\output\\greenville_modeling_dataset.csv"
+    }
+  ]
+}

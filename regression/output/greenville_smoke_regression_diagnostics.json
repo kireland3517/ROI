@@ -1,0 +1,90 @@
+{
+  "input_file": "C:\\Users\\kirel\\ROI Tool\\regression\\data\\Greenville-Anderson-Greer_SC.csv",
+  "filter_window": {
+    "start": "2024-01-01",
+    "end": "2026-06-03"
+  },
+  "target": "log_price_per_sqft",
+  "features": [
+    "sqft",
+    "beds",
+    "baths",
+    "property_age",
+    "sale_year",
+    "sale_month",
+    "postal1"
+  ],
+  "train_rows": 1027,
+  "test_rows": 257,
+  "training_rows": 1284,
+  "metrics": {
+    "train_r2": 0.1351488024795755,
+    "test_r2": 0.09448425292105767,
+    "test_mae_log_price_per_sqft": 0.40749172479085094,
+    "test_rmse_log_price_per_sqft": 0.6412384997672259,
+    "test_mae_pct_price_per_sqft": 82.45595056421638
+  },
+  "intercept": 5.221613523928503,
+  "top_coefficients": [
+    {
+      "feature": "cat__postal1_29685.0",
+      "coefficient": 0.7302527262421692
+    },
+    {
+      "feature": "cat__postal1_29607.0",
+      "coefficient": 0.3460196679429955
+    },
+    {
+      "feature": "cat__postal1_29640.0",
+      "coefficient": -0.32172326802385676
+    },
+    {
+      "feature": "cat__postal1_29605.0",
+      "coefficient": 0.3153334308314561
+    },
+    {
+      "feature": "cat__postal1_29630.0",
+      "coefficient": -0.31074592594561473
+    },
+    {
+      "feature": "cat__postal1_29601.0",
+      "coefficient": 0.30158227922006126
+    },
+    {
+      "feature": "cat__postal1_29609.0",
+      "coefficient": 0.2976097267256035
+    },
+    {
+      "feature": "cat__postal1_29635.0",
+      "coefficient": 0.25233469369764455
+    },
+    {
+      "feature": "cat__postal1_29642.0",
+      "coefficient": -0.23053077383477077
+    },
+    {
+      "feature": "cat__postal1_29671.0",
+      "coefficient": -0.2168277329246743
+    },
+    {
+      "feature": "cat__postal1_29673.0",
+      "coefficient": -0.20462915636735068
+    },
+    {
+      "feature": "cat__postal1_29661.0",
+      "coefficient": -0.1697052595080293
+    },
+    {
+      "feature": "cat__postal1_29662.0",
+      "coefficient": -0.16676477646205384
+    },
+    {
+      "feature": "cat__postal1_29657.0",
+      "coefficient": -0.16100379873071774
+    },
+    {
+      "feature": "num__baths",
+      "coefficient": 0.1548851248692911
+    }
+  ]
+}

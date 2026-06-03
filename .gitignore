@@ -1,0 +1,7 @@
+.env
+comps_output/
+regression/comps_output/
+__pycache__/
+*.pyc
+.venv/
+venv/

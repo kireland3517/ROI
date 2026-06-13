@@ -1,23 +1,88 @@
 {# Decorative product imagery — CSS/SVG only, aria-hidden, no stock photos. #}
 
-{% macro hero_asset_stack() %}
-<div class="hero-asset-stack" aria-hidden="true">
-  <div class="hero-asset-stack__frame">
-    <div class="asset-veil" aria-hidden="true"></div>
-  </div>
-  <div class="hero-asset-stack__preview">
-    {{ plan_preview('visual-panel--stacked') }}
+{% macro document_preview_sample() %}
+<div class="doc-preview" id="sample-structure" aria-hidden="true">
+  <div class="doc-preview__frame">
+    <div class="doc-preview__badge-row">
+      <span class="doc-preview__badge">Sample structure</span>
+      <span class="doc-preview__badge doc-preview__badge--muted">Example only</span>
+    </div>
+    <header class="doc-preview__header">
+      <p class="doc-preview__product">Pre-List Plan</p>
+      <h2 class="doc-preview__title">Seller Action Plan</h2>
+      <p class="doc-preview__meta">Example property · Sample date</p>
+    </header>
+
+    <section class="doc-preview__block">
+      <h3 class="doc-preview__label">Property facts</h3>
+      <div class="doc-preview__facts">
+        <span>3 bd</span>
+        <span>2 ba</span>
+        <span>1,840 sqft</span>
+        <span>Built 1998</span>
+      </div>
+      <div class="doc-preview__chips">
+        <span class="preview-chip preview-chip--records"><span class="preview-chip__dot"></span>County records</span>
+        <span class="preview-chip preview-chip--assumed"><span class="preview-chip__dot"></span>Assumed if missing</span>
+      </div>
+    </section>
+
+    <section class="doc-preview__block">
+      <h3 class="doc-preview__label">Plan at a glance</h3>
+      <div class="doc-preview__glance">
+        <div class="doc-preview__stat"><strong>3</strong><span>Top actions</span></div>
+        <div class="doc-preview__stat"><strong>90 days</strong><span>Target date</span></div>
+        <div class="doc-preview__stat"><strong>$4k–$9k</strong><span>Top spend range</span></div>
+      </div>
+      <p class="doc-preview__note">National cost ranges — not contractor quotes or value estimates.</p>
+    </section>
+
+    <section class="doc-preview__block">
+      <h3 class="doc-preview__label">Top action</h3>
+      <article class="doc-preview__action">
+        <div class="doc-preview__action-top">
+          <span class="doc-preview__action-title">Repair roof leak</span>
+          <span class="doc-preview__action-cost">$2,400–$4,800</span>
+        </div>
+        <div class="doc-preview__chips">
+          <span class="preview-chip preview-chip--answer"><span class="preview-chip__dot"></span>Your answer</span>
+          <span class="preview-chip preview-chip--estimate"><span class="preview-chip__dot"></span>Standard estimate</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="doc-preview__block doc-preview__block--dns">
+      <h3 class="doc-preview__label">Do not spend</h3>
+      <p class="doc-preview__dns"><span class="doc-preview__dns-title">Full kitchen remodel</span> — not worth starting before your target list date.</p>
+    </section>
+
+    <section class="doc-preview__block doc-preview__block--market">
+      <h3 class="doc-preview__label">Local market context</h3>
+      <div class="doc-preview__chips">
+        <span class="preview-chip preview-chip--records"><span class="preview-chip__dot"></span>County sale records</span>
+        <span class="preview-chip preview-chip--records"><span class="preview-chip__dot"></span>12-month window</span>
+      </div>
+      <p class="doc-preview__note">Context for nearby sales — not a valuation or price estimate.</p>
+    </section>
   </div>
 </div>
 {% endmacro %}
 
-{% macro band_asset_composition(modifier='visual-panel--promo') %}
-<div class="band-asset-composition" aria-hidden="true">
-  <img src="/static/assets/blueprint-vertical-structure.png" alt=""
-       class="band-asset-composition__structure" width="400" height="600"
-       loading="lazy" decoding="async">
-  {{ plan_preview(modifier) }}
+{% macro hero_document_visual() %}
+<div class="hero-document" aria-hidden="true">
+  <div class="hero-document__blueprint"></div>
+  {{ document_preview_sample() }}
 </div>
+{% endmacro %}
+
+{% macro hero_asset_stack() %}
+{# Legacy alias — landing uses hero_document_visual #}
+{{ hero_document_visual() }}
+{% endmacro %}
+
+{% macro band_asset_composition(modifier='visual-panel--promo') %}
+{# Deprecated on landing — kept for compatibility #}
+{{ plan_preview(modifier) }}
 {% endmacro %}
 
 {% macro icon_parcel(class_name='icon-parcel') %}

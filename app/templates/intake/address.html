@@ -1,20 +1,18 @@
 {% extends "base.html" %}
-{% from "partials/_intake_visuals.html" import hero_asset_stack, band_asset_composition %}
-{% block title %}Plan what to fix before you list{% endblock %}
+{% from "partials/_intake_visuals.html" import hero_document_visual %}
+{% block title %}Pre-List Plan{% endblock %}
 {% block body_class %} class="page-landing"{% endblock %}
 
 {% block content %}
 <div class="landing fade-slide">
-  <section class="landing-hero" id="hero">
-    <div class="landing-hero__bg" aria-hidden="true">
-      <div class="landing-hero__bg-texture"></div>
-      <div class="landing-hero__bg-grid"></div>
-    </div>
-    <div class="landing-container landing-hero__grid">
+
+  <section class="landing-hero" id="hero" aria-labelledby="hero-heading">
+    <div class="landing-hero__gridline" aria-hidden="true"></div>
+    <div class="landing-shell landing-hero__layout">
       <div class="landing-hero__copy">
-        <p class="landing-eyebrow">National seller decision support</p>
-        <h1 class="landing-headline">Plan what to fix before you list — and what to <em>skip</em>.</h1>
-        <p class="landing-lede">Enter your address. Answer four short questions. Get a prioritized Seller Action Plan with sourced cost ranges and clear reasons — not a generic renovation checklist.</p>
+        <p class="landing-kicker">Pre-List Plan</p>
+        <h1 id="hero-heading" class="landing-headline">Know what to fix before you list — and what to skip.</h1>
+        <p class="landing-subhead">Get a Seller Action Plan from your address, your timeline, and public property records — with source-labeled cost ranges, not contractor quotes or home value estimates.</p>
 
         <div class="landing-form-card" id="hero-form">
           {% if error %}
@@ -22,7 +20,7 @@
           {% endif %}
 
           <form class="landing-form" method="post" action="/intake/address" data-address-form>
-            <label class="form-label landing-form__label" for="address">Property address</label>
+            <label class="form-label landing-form__label" for="address">Your property address</label>
             <div class="landing-form__row">
               <div class="suggest-wrap landing-form__input" data-suggest>
                 <input type="text" id="address" name="address" value="{{ address_value }}"
@@ -33,84 +31,103 @@
                 <ul class="suggest-list" id="address-suggestions" role="listbox"
                     aria-label="Address suggestions" hidden></ul>
               </div>
-              <button type="submit" class="btn btn--primary landing-form__submit">Find my property</button>
+              <button type="submit" class="btn btn--primary btn--cta landing-form__submit">Start your plan</button>
             </div>
-            <p class="form-helper" id="address-helper">Include street, city, and state — we'll standardize the address before looking up public records.</p>
+            <p class="form-helper" id="address-helper">Street, city, and state. We standardize the address before looking up public records.</p>
             <p class="form-helper form-helper--status" id="suggest-status" data-suggest-status aria-live="polite"></p>
           </form>
-
-          <p class="landing-trust">We only use your address for public property records. No account required.</p>
         </div>
 
-        <p class="landing-meta">Free · No signup · About two minutes</p>
+        <p class="landing-hero-note">Free · No account · About two minutes</p>
       </div>
 
-      <aside class="landing-hero__preview" aria-hidden="true">
-        {{ hero_asset_stack() }}
+      <aside class="landing-hero__visual">
+        {{ hero_document_visual() }}
       </aside>
     </div>
   </section>
 
-  <section class="landing-band" id="sample-output" aria-labelledby="sample-heading">
-    <div class="landing-container landing-band__grid">
-      <div class="landing-band__copy">
-        <h2 id="sample-heading" class="landing-section-title">What you'll receive</h2>
-        <p class="landing-band__text">A timeline-ordered fix list with cost bands, source labels on every number, and explicit <strong>Do Not Spend</strong> callouts when something isn't worth starting before you list.</p>
-        <ul class="landing-checklist">
-          <li>Prioritized actions matched to your listing timeline</li>
-          <li>County property records where available</li>
-          <li>Every estimate labeled — your answers, records, or standard ranges</li>
-        </ul>
+  <section class="landing-trust-panel" aria-labelledby="trust-heading">
+    <div class="landing-shell">
+      <div class="trust-panel">
+        <h2 id="trust-heading" class="trust-panel__title">How we use your address</h2>
+        <p class="trust-panel__lede">Pre-List Plan uses your address only to build your Seller Action Plan. We do not require an account to generate your first plan.</p>
+        <dl class="trust-panel__list">
+          <div class="trust-panel__item">
+            <dt>Public property records</dt>
+            <dd>We use your address to pull county property records where available — beds, baths, year built, and related fields.</dd>
+          </div>
+          <div class="trust-panel__item">
+            <dt>Correct what is wrong</dt>
+            <dd>If records are missing or incorrect, you can adjust property facts before your plan is finalized.</dd>
+          </div>
+          <div class="trust-panel__item">
+            <dt>Local market context</dt>
+            <dd>Recorded nearby sales appear only when data is available for your market. They provide context — not a value estimate.</dd>
+          </div>
+          <div class="trust-panel__item">
+            <dt>Source-labeled output</dt>
+            <dd>Every recommendation and cost range is tagged — your answers, county records, or national standard ranges.</dd>
+          </div>
+        </dl>
       </div>
-      <aside class="landing-band__visual" aria-hidden="true">
-        {{ band_asset_composition() }}
-      </aside>
     </div>
   </section>
 
-  <section class="landing-value" aria-label="What you get">
-    <div class="landing-container">
-      <ul class="value-row value-row--landing">
-        <li class="value-item">
-          <span class="value-item__label">Prioritized fixes</span>
-          <span class="value-item__desc">What to tackle first, and what to skip</span>
+  <section class="landing-section landing-editorial" id="what-you-get" aria-labelledby="benefits-heading">
+    <div class="landing-shell landing-editorial__layout">
+      <div class="landing-editorial__narrative">
+        <p class="landing-kicker">What you get</p>
+        <h2 id="benefits-heading" class="landing-section__title">A Seller Action Plan you can act on</h2>
+        <p class="landing-section__lede">Pre-List Plan helps you decide <strong>what to fix</strong>, <strong>what to skip</strong>, and <strong>what depends on your timeline</strong> — with cost bands and source labels on every line, not a generic renovation checklist.</p>
+        <p class="landing-section__lede">The plan combines your answers with public records and national cost ranges. It does not estimate your home's value or predict project returns.</p>
+      </div>
+      <ul class="landing-editorial__cards">
+        <li class="editorial-card">
+          <h3 class="editorial-card__title">What to fix first</h3>
+          <p class="editorial-card__desc">Prioritized actions ordered by urgency, buyer impact, and your target list date.</p>
         </li>
-        <li class="value-item">
-          <span class="value-item__label">Timeline-aware</span>
-          <span class="value-item__desc">Matched to when you plan to list</span>
+        <li class="editorial-card">
+          <h3 class="editorial-card__title">What to skip</h3>
+          <p class="editorial-card__desc">Explicit do-not-spend callouts when work is not worth starting before you list.</p>
         </li>
-        <li class="value-item">
-          <span class="value-item__label">Sourced estimates</span>
-          <span class="value-item__desc">National cost ranges — not contractor quotes</span>
+        <li class="editorial-card editorial-card--accent">
+          <h3 class="editorial-card__title">What data supports it</h3>
+          <p class="editorial-card__desc">Property records, your intake answers, and labeled standard cost ranges — with local sale context when available.</p>
         </li>
       </ul>
     </div>
   </section>
 
-  <section class="landing-steps" id="how-it-works" aria-labelledby="steps-heading">
-    <img src="/static/assets/blueprint-square-motif.png" alt=""
-         class="landing-steps__motif" width="160" height="160" loading="lazy" decoding="async">
-    <div class="landing-container">
-      <h2 id="steps-heading" class="landing-section-title landing-section-title--center">How it works</h2>
-      <ol class="steps-grid">
-        <li class="steps-grid__item">
-          <span class="steps-grid__num">1</span>
-          <span class="steps-grid__title">Enter your address</span>
-          <span class="steps-grid__desc">We standardize it and pull public property records where available.</span>
+  <section class="landing-section landing-process" id="how-it-works" aria-labelledby="process-heading">
+    <div class="landing-shell">
+      <header class="landing-section__header landing-section__header--center">
+        <p class="landing-kicker">How it works</p>
+        <h2 id="process-heading" class="landing-section__title">Three steps with Pre-List Plan</h2>
+      </header>
+      <ol class="process-grid">
+        <li class="process-step">
+          <span class="process-step__num">1</span>
+          <h3 class="process-step__title">Enter your address</h3>
+          <p class="process-step__desc">We standardize it and pull public property records where available.</p>
         </li>
-        <li class="steps-grid__item">
-          <span class="steps-grid__num">2</span>
-          <span class="steps-grid__title">Answer four questions</span>
-          <span class="steps-grid__desc">Your goal, timeline, spend comfort, and any known problems — skip what you don't know yet.</span>
+        <li class="process-step">
+          <span class="process-step__num">2</span>
+          <h3 class="process-step__title">Answer a few questions</h3>
+          <p class="process-step__desc">Your goal, timeline, spend comfort, and any known problems — skip what you do not know yet.</p>
         </li>
-        <li class="steps-grid__item">
-          <span class="steps-grid__num">3</span>
-          <span class="steps-grid__title">Get your Seller Action Plan</span>
-          <span class="steps-grid__desc">A prioritized list with cost bands, sources, and what not to spend on before you list.</span>
+        <li class="process-step">
+          <span class="process-step__num">3</span>
+          <h3 class="process-step__title">Receive your Seller Action Plan</h3>
+          <p class="process-step__desc">A prioritized document with cost bands, sources, timeline markers, and what not to spend on before you list.</p>
         </li>
       </ol>
+      <p class="landing-process__cta">
+        <a class="btn btn--primary btn--cta" href="#hero-form">Start your Pre-List Plan</a>
+      </p>
     </div>
   </section>
+
 </div>
 {% endblock %}
 

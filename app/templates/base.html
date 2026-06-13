@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Seller Action Plan{% endblock %}</title>
+  <title>{% block title %}Pre-List Plan{% endblock %}</title>
   <link rel="stylesheet" href="/static/fonts/fonts.css">
   <link rel="stylesheet" href="/static/css/tokens.css">
   <link rel="stylesheet" href="/static/css/base.css">
@@ -15,19 +15,22 @@
   <link rel="stylesheet" href="/static/css/report.css">
 </head>
 <body{% block body_class %}{% endblock %}>
-  <header class="site-header" role="banner">
+  <header class="site-header site-header--product" role="banner">
     <div class="site-header__inner">
       <a class="site-brand" href="/">
         <span class="site-brand__mark" aria-hidden="true"></span>
-        <span class="site-brand__text">Seller Action Plan</span>
+        <span class="site-brand__wordmark">
+          <span class="site-brand__title">Pre-List Plan</span>
+        </span>
       </a>
       <nav class="site-nav" aria-label="Primary">
         <div class="site-nav__links">
+          <a class="site-nav__link" href="/#what-you-get">What you get</a>
           <a class="site-nav__link" href="/#how-it-works">How it works</a>
-          <a class="site-nav__link" href="/#sample-output">Sample output</a>
+          <a class="site-nav__link" href="/#sample-structure">Sample structure</a>
         </div>
         {% block step_indicator %}{% endblock %}
-        <a class="btn btn--nav" href="/#hero-form">Get your plan</a>
+        <a class="btn btn--nav btn--nav-primary" href="/#hero-form">Start your plan</a>
       </nav>
       <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
         <span class="site-nav-toggle__bar"></span>
@@ -35,9 +38,10 @@
       </button>
     </div>
     <div class="site-nav-panel" id="site-nav-panel" hidden>
+      <a class="site-nav-panel__link" href="/#what-you-get">What you get</a>
       <a class="site-nav-panel__link" href="/#how-it-works">How it works</a>
-      <a class="site-nav-panel__link" href="/#sample-output">Sample output</a>
-      <a class="btn btn--full btn--primary" href="/#hero-form">Get your plan</a>
+      <a class="site-nav-panel__link" href="/#sample-structure">Sample structure</a>
+      <a class="btn btn--full btn--primary" href="/#hero-form">Start your plan</a>
     </div>
   </header>
   <main id="main-content">

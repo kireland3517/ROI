@@ -1,0 +1,71 @@
+{% macro citation_chip(citation) %}
+  {%- if citation.source == 'seed_table' -%}
+  <span class="chip chip--estimate"
+        data-explainer="A national cost range we maintain and version — not a contractor quote.">
+    <span class="dot"></span>Standard estimate v1.0</span>
+  {%- elif citation.source == 'issue_picker' or citation.source == 'user_input' -%}
+  <span class="chip chip--answer"><span class="dot"></span>Your answer</span>
+  {%- else -%}
+  <span class="chip chip--records"><span class="dot"></span>Property record</span>
+  {%- endif -%}
+{% endmacro %}
+
+{% macro confidence_chip(item) %}
+  {%- if item.cost_confidence == 'approved' -%}
+  <span class="chip chip--records"
+        data-explainer="This cost range has passed owner or expert review.">
+    <span class="dot"></span>{{ item.cost_confidence_label }}</span>
+  {%- else -%}
+  <span class="chip chip--estimate"
+        data-explainer="A national cost range we maintain — pending source QA, not a contractor quote.">
+    <span class="dot"></span>{{ item.cost_confidence_label }}</span>
+  {%- endif -%}
+{% endmacro %}
+
+{% macro action_card(item) %}
+<details class="card{% if item.timeline_status == 'urgent' %} card--urgent{% endif %}"
+         data-action-card id="item-{{ item.id }}">
+  <summary>
+    <div class="card-face">
+      <div class="card-face-top">
+        <span class="card-title">{{ item.name }}</span>
+        <span class="status status--{{ item.timeline_status }}"><span class="dot"></span>{{ item.timeline_label }}</span>
+      </div>
+      <div class="card-meta">
+        <span class="badge badge--{{ item.tier }}">{{ item.tier_badge }}</span>
+        <span class="cost-band">{{ item.cost_band }}</span>
+        <span>{{ item.diy.label }}</span>
+        <span class="summary-hint">
+          <span class="closed-label">Why this made your list</span>
+          <span class="open-label">Close</span>
+        </span>
+      </div>
+    </div>
+  </summary>
+  <div class="card-expand">
+    <h4>Why this made your list</h4>
+    <ul class="evidence-list">
+      {% for citation in item.rationale.citations %}
+      <li>{{ citation_chip(citation) }} <span>{{ citation.text }}</span></li>
+      {% endfor %}
+    </ul>
+    <h4>Effort and timing</h4>
+    <p>
+      ~{{ item.total_days }} day{{ 's' if item.total_days != 1 else '' }} including lead time
+      · {{ item.duration_label }}
+    </p>
+    <div class="chip-row">
+      {{ confidence_chip(item) }}
+    </div>
+    {% if item.diy.reason %}
+    <p><strong>{{ item.diy.label }}:</strong> {{ item.diy.reason }}.</p>
+    {% endif %}
+    <h4>If you skip it</h4>
+    <p>{{ item.rationale.skip_risk }}</p>
+    {% if item.feasible_after %}
+    <p class="fineprint">Feasible if you list after {{ item.feasible_after | friendly_date }}.</p>
+    {% endif %}
+  </div>
+</details>
+{% endmacro %}
+

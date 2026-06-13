@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Confirm your property{% endblock %}
+
+{% block content %}
+<div class="col-narrow intake fade-slide">
+  <h1>Is this your property?</h1>
+
+  <div class="address-card">
+    <span class="addr">{{ address.display }}</span>
+    {% if address.provider == 'smarty' %}
+    <span class="chip chip--records"><span class="dot"></span>USPS-standardized</span>
+    {% else %}
+    <span class="chip chip--records"><span class="dot"></span>Standardized — formatting check</span>
+    {% endif %}
+  </div>
+
+  <form method="post" action="/intake/{{ session_id }}/confirm">
+    <button type="submit" class="btn btn--full">Yes, that's my property</button>
+  </form>
+  <div class="skip-row">
+    <a class="btn-quiet" href="/">Edit address</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+# Property ROI Analysis Tool — Recommendation Anomaly Rules v1.0
+
+**Artifact:** Recommendation Anomaly Rules  
+**Version:** v1.0  
+**Date:** June 2026  
+**Status:** Draft seed-rule artifact; staging timeline rule approved by Decisions Log V11  
+**Prepared by:** Manus AI  
+**Governing Sources:** PRD v0.8, Decisions Log V11, Technical Specification V2, Duration/Lead-Time Seed Table v1.0
+
+## 1. Purpose
+
+This artifact records anomaly rules that should affect user-facing recommendation explanations, warning callouts, and internal confidence or timeline feasibility labels. An anomaly rule is not the same as a ranking rule. It exists to warn the seller when a recommendation that may otherwise be valuable is constrained by missing data, timing, dependency, source quality, or operational feasibility.
+
+## 2. Approved MVP Anomaly Rule: Professional Staging Under 21 Days
+
+Decisions Log V11 approved a staging-specific anomaly rule. The rule should fire when professional staging is recommended and the seller's target list date is fewer than 21 calendar days away.[1]
+
+| Field | Value |
+|---|---|
+| Rule ID | `ANOM-STAGING-UNDER-21-DAYS` |
+| Repair type | Professional staging |
+| Trigger condition | `target_list_date - current_date < 21 calendar days` |
+| Supporting timing assumption | Professional staging lead-time high = 21 days in `duration_lead_time_rules_v1.0` |
+| Severity | Timeline risk / scheduling risk |
+| MVP status | Approved |
+| Decision reference | D-V11-002 |
+| Affected outputs | Recommendation line item, timeline feasibility note, report anomaly callout |
+
+## 3. Recommended User-Facing Draft Copy
+
+The exact UX copy remains open for final report-output specification and legal/UX review. The following copy should be treated as a draft starting point, not final product language.
+
+> **Timeline risk:** Professional staging often requires advance scheduling. Because your target list date is less than 21 days away, staging may still be worthwhile, but availability could limit whether it can be completed before listing. Consider calling stagers immediately or using a faster partial-staging/photo-prep alternative.
+
+This wording avoids promising that staging is impossible. It instead explains that the calendar creates risk and gives the seller a practical next step.
+
+## 4. Engine Behavior
+
+| Engine Step | Required Behavior |
+|---|---|
+| Candidate generation | Staging may still be generated normally if cost/value and market conditions support it. |
+| Timeline feasibility | Compare target list date against the 21-day high lead-time threshold. |
+| Recommendation ranking | Do not automatically remove staging solely because the threshold is crossed; instead, mark it as timeline-risk unless other logic pushes it beyond timeline. |
+| Output assembly | Show the anomaly callout beside the staging recommendation and include the reason in trace data. |
+| Audit trail | Persist `ANOM-STAGING-UNDER-21-DAYS` in the recommendation trace. |
+
+## 5. Seed-Table Shape
+
+| Field | Requirement |
+|---|---|
+| `rule_id` | Stable anomaly identifier. |
+| `repair_type` | Repair type or subtype affected. |
+| `trigger_type` | Example: `target_date_less_than_lead_time_high`. |
+| `trigger_threshold_days` | Numeric threshold, here `21`. |
+| `severity` | User-facing warning classification. |
+| `message_template` | Draft or final user-facing copy. |
+| `decision_reference` | Relevant Decisions Log entry. |
+| `version` | Seed rule version. |
+
+## 6. References
+
+[1]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V11.md "Property ROI Analysis Tool — Decisions Log V11"  
+[2]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Duration%20Lead-Time%20Seed%20Table%20v1.0.md "Property ROI Analysis Tool — Duration/Lead-Time Seed Table v1.0"  
+[3]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Technical%20Specification%20V2.md "Property ROI Analysis Tool — Technical Specification V2"  

@@ -1,0 +1,239 @@
+/* Intake screens: one question per screen, centered narrow column. */
+
+.intake {
+  padding-top: var(--sp-12);
+}
+
+.intake h1 {
+  font-size: var(--text-xl);
+}
+
+.why-line {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--sp-6);
+}
+
+.address-hero {
+  padding-top: var(--sp-18);
+}
+
+.address-hero h1 {
+  font-size: var(--text-2xl);
+}
+
+.address-hero .lede {
+  font-size: var(--text-md);
+  color: var(--ink-muted);
+  margin-bottom: var(--sp-6);
+}
+
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* Address typeahead (suggestions come from the server-side proxy) */
+
+.suggest-wrap {
+  position: relative;
+}
+
+.suggest-wrap input {
+  width: 100%;
+}
+
+.suggest-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: var(--sp-1);
+  list-style: none;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.10);
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.suggest-list[hidden] {
+  display: none;
+}
+
+.suggest-list li {
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: calc(var(--radius) - 2px);
+  font-family: var(--font-utility);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.suggest-list li:hover,
+.suggest-list li[aria-selected="true"] {
+  background: var(--field-tint);
+}
+
+/* Option cards (radio) */
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+
+.option {
+  position: relative;
+  display: block;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--radius);
+  padding: var(--sp-4);
+  cursor: pointer;
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.option .option-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  display: block;
+}
+
+.option .option-desc {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.option:hover {
+  border-color: var(--field);
+}
+
+.option:has(input:checked) {
+  border-color: var(--field);
+  background: var(--field-tint);
+}
+
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--field);
+  outline-offset: 2px;
+}
+
+.skip-row {
+  margin-top: var(--sp-4);
+  text-align: center;
+}
+
+.skip-note {
+  display: none;
+  margin-top: var(--sp-2);
+}
+
+.date-reveal {
+  margin: var(--sp-3) 0;
+}
+
+.date-reveal[hidden] {
+  display: none;
+}
+
+/* Issue picker */
+
+.issue-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+@media (min-width: 560px) {
+  .issue-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.issue-chip {
+  position: relative;
+  display: block;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-4);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.issue-chip input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.issue-chip:hover {
+  border-color: var(--field);
+}
+
+.issue-chip:has(input:checked) {
+  border-color: var(--field);
+  background: var(--field-tint);
+}
+
+.issue-chip:has(input:focus-visible) {
+  outline: 2px solid var(--field);
+  outline-offset: 2px;
+}
+
+/* Building screen */
+
+.building {
+  padding-top: var(--sp-18);
+  text-align: left;
+}
+
+.status-lines {
+  list-style: none;
+  margin: var(--sp-6) 0;
+  padding: 0;
+  font-family: var(--font-utility);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.status-lines li {
+  padding: var(--sp-2) 0;
+  opacity: 0;
+}
+
+.status-lines li.shown {
+  opacity: 1;
+  transition: opacity 300ms ease-out;
+}
+
+/* Confirm screen */
+
+.address-card {
+  background: var(--paper-raised);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--radius);
+  padding: var(--sp-6);
+  margin-bottom: var(--sp-6);
+}
+
+.address-card .addr {
+  font-family: var(--font-utility);
+  font-size: var(--text-lg);
+  display: block;
+  margin-bottom: var(--sp-3);
+}

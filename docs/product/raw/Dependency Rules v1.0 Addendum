@@ -1,0 +1,66 @@
+# Property ROI Analysis Tool — Dependency Rules v1.0 Addendum
+
+**Artifact:** Dependency Rules Addendum  
+**Version:** v1.0 Addendum  
+**Date:** June 2026  
+**Status:** Draft seed-rule addendum; expert validation still required  
+**Prepared by:** Manus AI  
+**Governing Sources:** Decisions Log V11, Technical Specification V2, Home Improvement Project Sequencing Analysis
+
+## 1. Purpose
+
+This addendum records how the uploaded sequencing analysis and the newly approved accessibility split affect the `dependency_rules` seed-table family. It does not attempt to reproduce the entire 30-type dependency matrix. Instead, it documents the governance changes needed so Technical Specification V3 and future seed-table exports do not lose the sequencing implications of the latest decisions.
+
+## 2. Approved Sequencer-Relevant Updates
+
+| Update | Required Treatment | Decision Reference | Status |
+|---|---|---|---|
+| The 13 previously missing duration/lead-time repair types are legitimate sequencer items. | Each must have explicit duration/lead-time coverage; do not rely on generic fallback timing. | D-V11-003 | Approved |
+| Accessibility improvements must be split for timing and sequencing. | Add subtype-aware dependency handling for minor accessibility improvements and exterior access modifications. | D-V11-001 | Approved |
+| Professional staging under 21 days requires timeline anomaly logic. | Represent in anomaly rules, not dependency rules, unless staging is later linked to photography or listing-prep sequencing. | D-V11-002 | Approved |
+
+## 3. Dependency-Rule Implications for the 13 Rows
+
+The sequencing analysis states that several of the 13 items are independent repairs, while others may interact with broader system dependencies. The seed table should avoid inventing dependencies where the source analysis does not establish one, but it should preserve known dependencies where the 30-type matrix supports them.
+
+| Repair Type | Dependency Treatment for Seed Table | Review Status | Notes |
+|---|---|---|---|
+| Non-functional minor systems | Depends on specific system if identified; otherwise no generic dependency. | pending_matrix_export | Must not hide MEP dependencies if the underlying system is plumbing, HVAC, or electrical. |
+| HVAC filter / tune-up | No hard dependency by default. | pending_matrix_export | May be scheduled independently unless part of failed HVAC replacement. |
+| Worn deck / porch boards | No hard dependency by default. | pending_matrix_export | Treat as independent exterior carpentry unless structural access issue is identified. |
+| Caulking / weatherstripping | No hard dependency by default. | pending_matrix_export | Independent weatherization task. |
+| Cracked driveway / walkway | No hard dependency by default. | pending_matrix_export | May be independent unless underground utility or drainage work is present. |
+| Window seal failure | No hard dependency by default. | pending_matrix_export | Independent opening/envelope task. |
+| Kitchen cabinet hardware update | Soft finish-stage dependency only if broader kitchen work exists. | pending_matrix_export | Avoid completing hardware before messy cabinet/paint work if both are recommended. |
+| Fixture replacement | Hard dependency on underlying rough plumbing/electrical repair and inspection if applicable. | pending_matrix_export | Aligns with rough-before-finish logic. |
+| Landscaping / curb appeal | Hard dependency on resolved sewer/septic or disruptive exterior utility work where present. | pending_matrix_export | The sequencing analysis specifically flags subterranean utility/site-work precedence. |
+| Professional staging | Usually after repair/cleaning work; anomaly rule handles lead-time risk. | pending_matrix_export | Consider soft dependency after messy repairs and before photography. |
+| Professional photography | Usually after staging, decluttering, and visible repairs when applicable. | pending_matrix_export | Consider soft sequencing dependency, not a code dependency. |
+| Closet organization | Soft dependency after messy interior work if present. | pending_matrix_export | Independent if limited to organizing systems. |
+| Minor accessibility improvements | No hard dependency by default; depends on specific mounting/location needs. | pending_source_QA | New subtype from D-V11-001. |
+| Exterior access modifications | Potential dependency on exterior site, concrete, grading, or walkway work where present. | pending_source_QA | New subtype from D-V11-001; do not merge with minor accessibility for sequencing. |
+
+## 4. Required Full Seed-Table Export Fields
+
+The final `dependency_rules` export should include at least the following fields.
+
+| Field | Requirement |
+|---|---|
+| `rule_id` | Stable dependency-rule identifier. |
+| `repair_type` | Canonical repair type or subtype. |
+| `depends_on_repair_type` | Required predecessor, if any. |
+| `dependency_type` | `hard`, `soft`, `none`, or equivalent controlled vocabulary. |
+| `critical_path_flag` | Boolean flag for rules that can block timeline feasibility. |
+| `source_reference` | Sequencing workpaper section or external source citation. |
+| `review_status` | `pending_matrix_export`, `owner_approved`, `expert_validated`, or equivalent. |
+| `version` | Seed-table version. |
+
+## 5. Readiness Status
+
+The dependency-rule family remains a **build blocker** until the full 30-type matrix is exported into row-level seed data and reviewed. Decisions Log V11 improves scope clarity but does not by itself close the expert-validation gate.
+
+## 6. References
+
+[1]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V11.md "Property ROI Analysis Tool — Decisions Log V11"  
+[2]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Technical%20Specification%20V2.md "Property ROI Analysis Tool — Technical Specification V2"  
+[3]: /home/ubuntu/upload/HomeImprovementProjectSequencingAnalysis "Home Improvement Project Sequencing Analysis"  

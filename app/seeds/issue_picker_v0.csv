@@ -1,0 +1,15 @@
+issue_key,label,sort_order,version
+roof_leak,Roof leak or missing shingles,1,1
+water_stains,Water stains on ceilings or walls,2,1
+plumbing_leak,Dripping faucet or plumbing leak,3,1
+mold,Mold or mildew spots,4,1
+electrical_issues,Outlets or switches that don't work,5,1
+smoke_detectors,Missing or old smoke detectors,6,1
+hvac_old,Heating/cooling over 15 years old or struggling,7,1
+water_heater_old,Water heater over 10 years old,8,1
+broken_window,Cracked or broken window,9,1
+caulking_drafts,Drafty windows or doors / failing caulk,10,1
+gutters,Damaged or overflowing gutters,11,1
+deck_wear,Worn deck or porch boards,12,1
+driveway_cracks,Cracked driveway or walkway,13,1
+pests,Signs of pests,14,1

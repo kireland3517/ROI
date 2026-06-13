@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ q.title }}{% endblock %}
+
+{% block step_indicator %}
+<span class="step-indicator">Step {{ q.step }} of {{ total_steps }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="col-narrow intake fade-slide">
+  <h1>{{ q.title }}</h1>
+  <p class="why-line">{{ q.why }}</p>
+
+  <form method="post" action="/intake/{{ session_id }}/q/{{ step_key }}" data-question-form>
+    <div class="options" role="radiogroup" aria-label="{{ q.title }}">
+      {% for opt in q.options %}
+      <label class="option">
+        <input type="radio" name="value" value="{{ opt.value }}"
+               {% if current_value == opt.value %}checked{% endif %}>
+        <span class="option-label">{{ opt.label }}</span>
+        <span class="option-desc">{{ opt.desc }}</span>
+      </label>
+      {% endfor %}
+    </div>
+
+    {% if q.allow_date %}
+    <button type="button" class="btn-quiet" data-date-toggle aria-expanded="false">
+      I have a specific date
+    </button>
+    <div class="date-reveal" data-date-reveal {% if not current_date %}hidden{% endif %}>
+      <label class="fineprint" for="target_date">Target list date</label>
+      <input type="date" id="target_date" name="target_date" value="{{ current_date }}">
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn--full">Continue</button>
+
+    {% if q.skippable %}
+    <div class="skip-row">
+      <button type="submit" class="btn-quiet" name="value" value="{{ q.skip_value }}">
+        {{ q.skip_label }}
+      </button>
+      <p class="fineprint">{{ q.skip_note }}</p>
+    </div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="/static/js/intake.js"></script>{% endblock %}

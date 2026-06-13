@@ -4,3 +4,9 @@ python-dotenv
 requests
 numpy
 scikit-learn
+fastapi
+uvicorn
+jinja2
+python-multipart
+pytest
+httpx

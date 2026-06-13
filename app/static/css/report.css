@@ -1,0 +1,313 @@
+/* The starter Seller Action Plan: a decision document on a timeline horizon. */
+
+.report-header {
+  margin-bottom: var(--sp-6);
+}
+
+.report-header .addr {
+  font-family: var(--font-utility);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  display: block;
+  margin-top: var(--sp-1);
+}
+
+.verdict {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  margin: var(--sp-6) 0 var(--sp-8);
+}
+
+/* Executive verdict */
+
+.executive-verdict {
+  margin-top: var(--sp-6);
+}
+
+.verdict-headline {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  margin: var(--sp-2) 0 var(--sp-3);
+}
+
+.verdict-body {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* Plan at a glance */
+
+.plan-summary-grid {
+  margin-top: var(--sp-2);
+}
+
+.plan-summary-grid .fact--urgent b {
+  color: var(--field);
+}
+
+.beyond-timeline .beyond-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.beyond-timeline .horizon-item::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-style: dashed;
+}
+
+.report-section {
+  margin: var(--sp-12) 0;
+}
+
+.report-section > h2 {
+  margin-bottom: var(--sp-2);
+}
+
+.section-sub {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  margin-bottom: var(--sp-4);
+}
+
+/* Property summary */
+
+.facts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4) var(--sp-6);
+  font-family: var(--font-utility);
+  font-size: var(--text-sm);
+  margin-bottom: var(--sp-2);
+}
+
+.facts-row .fact b {
+  font-weight: 500;
+  display: block;
+  font-size: var(--text-md);
+}
+
+.facts-row .fact span {
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+}
+
+/* Local market context */
+
+.market-context .fineprint {
+  margin-top: var(--sp-3);
+}
+
+.market-context .chip-row {
+  margin-top: var(--sp-3);
+}
+
+.facts-edit summary {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--field);
+  cursor: pointer;
+  padding: var(--sp-2) 0;
+}
+
+.facts-edit form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+}
+
+.facts-edit label {
+  font-family: var(--font-utility);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  display: block;
+}
+
+.facts-edit .btn {
+  grid-column: 1 / -1;
+}
+
+/* ---------- timeline horizon (signature) ---------- */
+
+.horizon {
+  position: relative;
+  padding-left: var(--sp-8);
+}
+
+.horizon::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--horizon);
+  opacity: 0.45;
+}
+
+.horizon-marker {
+  position: relative;
+  font-family: var(--font-utility);
+  font-size: var(--text-xs);
+  color: var(--horizon);
+  padding: var(--sp-2) 0;
+}
+
+.horizon-marker::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--sp-8) + 4px);
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--horizon);
+  transform: translateY(-50%);
+}
+
+.horizon-item {
+  position: relative;
+  margin: var(--sp-3) 0;
+}
+
+.horizon-item::before {
+  content: attr(data-seq);
+  position: absolute;
+  left: calc(-1 * var(--sp-8) + 1px);
+  top: var(--sp-4);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--horizon);
+  color: var(--horizon);
+  font-family: var(--font-utility);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.horizon-item--beyond::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-style: dashed;
+}
+
+.horizon-date {
+  position: relative;
+  margin: var(--sp-6) 0;
+  padding: var(--sp-2) 0;
+  font-family: var(--font-utility);
+  font-size: var(--text-sm);
+  color: var(--horizon);
+  border-top: 2px dashed var(--horizon);
+}
+
+.horizon-date::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--sp-8) + 4px);
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: var(--horizon);
+  transform: rotate(45deg);
+}
+
+.horizon-empty {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  padding: var(--sp-3) 0;
+}
+
+/* Plan reveal (one orchestrated moment) */
+
+.reveal-stagger .horizon-item {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.reveal-stagger.revealed .horizon-item {
+  opacity: 1;
+  transform: none;
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+  transition-delay: calc(var(--reveal-index, 0) * 60ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-stagger .horizon-item {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Do Not Spend */
+
+.dns-tally {
+  font-family: var(--font-utility);
+  font-size: var(--text-sm);
+  color: var(--field);
+  margin-bottom: var(--sp-4);
+}
+
+.dns-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* Also on the list */
+
+.also-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+}
+
+.also-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-3);
+  border-bottom: 1px solid var(--ink-06);
+  padding-bottom: var(--sp-2);
+}
+
+/* Next steps */
+
+.next-steps {
+  margin: 0;
+  padding-left: var(--sp-6);
+}
+
+.next-steps li {
+  margin-bottom: var(--sp-3);
+}
+
+/* Disclaimer */
+
+.disclaimer {
+  border-top: 1px solid var(--ink-10);
+  padding-top: var(--sp-6);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.change-answers {
+  margin-top: var(--sp-8);
+  text-align: center;
+}

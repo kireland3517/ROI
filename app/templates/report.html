@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% from "partials/_macros.html" import action_card, citation_chip %}
+
+{% block title %}Your Seller Action Plan{% endblock %}
+
+{% block content %}
+<div class="col-wide fade-slide">
+
+  <header class="report-header">
+    <h1>Your Seller Action Plan</h1>
+    <span class="addr">{{ address.display }} · {{ plan.generated_on | friendly_date }}</span>
+    <div class="chip-row">
+      {% if plan.horizon.assumed %}
+      <span class="chip chip--assumed"
+            data-explainer="You weren't sure about timing, so we planned for 3–6 months. Change your answers anytime.">
+        <span class="dot"></span>Assumed timing — you can change this</span>
+      {% endif %}
+      {% if 'spend_unsure' in plan.assumptions %}
+      <span class="chip chip--assumed"
+            data-explainer="You haven't set a spend comfort yet. Cost bands are shown for everything — you choose what fits.">
+        <span class="dot"></span>Spend comfort not set</span>
+      {% endif %}
+      {% if 'no_condition_input' in plan.assumptions %}
+      <span class="chip chip--assumed"
+            data-explainer="You didn't flag any known problems, so condition-specific repairs aren't in this plan yet.">
+        <span class="dot"></span>No condition input yet</span>
+      {% endif %}
+      {% if 'facts_fallback' in plan.assumptions %}
+      <span class="chip chip--assumed"
+            data-explainer="County records were unavailable. Property details and this plan lean on what you told us.">
+        <span class="dot"></span>County records unavailable</span>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="report-section executive-verdict" aria-labelledby="verdict-heading">
+    <h2 id="verdict-heading">Executive verdict</h2>
+    <p class="verdict-headline">{{ plan.verdict.headline }}</p>
+    {% if plan.verdict.body %}
+    <p class="verdict-body">{{ plan.verdict.body }}</p>
+    {% endif %}
+  </section>
+
+  <section class="report-section plan-summary" aria-labelledby="glance-heading">
+    <h2 id="glance-heading">Plan at a glance</h2>
+    <p class="section-sub">National cost ranges from our seed tables — not contractor quotes or value estimates.</p>
+    <div class="facts-row plan-summary-grid">
+      <div class="fact">
+        <b>{{ plan.plan_summary.top_action_count }}</b>
+        <span>Top actions</span>
+      </div>
+      {% if plan.plan_summary.urgent_count %}
+      <div class="fact fact--urgent">
+        <b>{{ plan.plan_summary.urgent_count }}</b>
+        <span>Urgent fixes</span>
+      </div>
+      {% endif %}
+      {% if plan.plan_summary.top_cost_band %}
+      <div class="fact">
+        <b>{{ plan.plan_summary.top_cost_band }}</b>
+        <span>Top {{ plan.plan_summary.top_action_count }} spend range</span>
+      </div>
+      {% endif %}
+      {% if plan.plan_summary.dns_savings_band %}
+      <div class="fact">
+        <b>{{ plan.plan_summary.dns_savings_band }}</b>
+        <span>Low-return spending to skip</span>
+      </div>
+      {% endif %}
+      <div class="fact">
+        <b>{{ plan.plan_summary.target_date | friendly_date }}</b>
+        <span>Target date{% if plan.horizon.assumed %} (assumed){% endif %}</span>
+      </div>
+      {% if not plan.plan_summary.spend_unsure %}
+      <div class="fact">
+        <b>{{ plan.plan_summary.spend_label }}</b>
+        <span>Spend comfort</span>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {% include "partials/_property_summary.html" %}
+
+  {% include "partials/_market_context.html" %}
+
+  <section class="report-section" aria-labelledby="plan-heading">
+    <h2 id="plan-heading">Your plan, in order</h2>
+    <p class="section-sub">
+      {% if plan.plan_items | length < 5 %}
+      Your answers and timeline surfaced {{ plan.plan_items | length }}
+      action{{ '' if plan.plan_items | length == 1 else 's' }} — a short list is a good sign.
+      {% else %}
+      Work from the top. Order reflects urgency, buyer impact, and your date.
+      {% endif %}
+    </p>
+
+    <div class="horizon reveal-stagger">
+      <div class="horizon-marker">Today — {{ plan.horizon.today | friendly_date }}</div>
+
+      {% for item in plan.plan_items %}
+      <div class="horizon-item" data-seq="{{ item.sequence }}">
+        {{ action_card(item) }}
+      </div>
+      {% endfor %}
+
+      <div class="horizon-date">
+        Your target date — {{ plan.horizon.target_date | friendly_date }}{% if plan.horizon.assumed %} (assumed){% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="report-section beyond-timeline" aria-labelledby="beyond-heading">
+    <h2 id="beyond-heading">Beyond your timeline</h2>
+    {% if plan.beyond_timeline %}
+    <p class="section-sub">
+      These won't fit before your target date — worth doing if you extend your timeline,
+      not forgotten.
+    </p>
+    <div class="beyond-list reveal-stagger">
+      {% for item in plan.beyond_timeline %}
+      <div class="horizon-item horizon-item--beyond" data-seq="">
+        {{ action_card(item) }}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="section-sub">Everything we recommend fits your timeline.</p>
+    {% endif %}
+  </section>
+
+  {% if plan.additional_items %}
+  <section class="report-section" aria-labelledby="also-heading">
+    <h2 id="also-heading">Also on the list</h2>
+    <p class="section-sub">Worth doing after the plan above — same rules, lower priority.</p>
+    <ul class="also-list">
+      {% for item in plan.additional_items %}
+      <li>
+        <span class="card-title">{{ item.name }}</span>
+        <span class="cost-band">{{ item.cost_band }}</span>
+        <span class="status status--{{ item.timeline_status }}"><span class="dot"></span>{{ item.timeline_label }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="report-section" aria-labelledby="dns-heading">
+    <h2 id="dns-heading">Don't spend money here</h2>
+    {% if plan.do_not_spend %}
+    <p class="dns-tally">We just saved you from roughly {{ plan.do_not_spend_total_band }} of low-return spending.</p>
+    <div class="dns-list">
+      {% for item in plan.do_not_spend %}
+      <div class="card card--dns">
+        <div class="card-face-top">
+          <span class="card-title">{{ item.name }}</span>
+          <span class="status status--not_recommended"><span class="dot"></span>{{ item.timeline_label }}</span>
+        </div>
+        <p><span class="cost-band strike">{{ item.cost_band }}</span> — {{ item.reason }}.</p>
+        <div class="chip-row">
+          {% for citation in item.rationale.citations %}{{ citation_chip(citation) }}{% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="section-sub">Nothing to warn you off yet. This list grows when we know more
+      about the home's condition.</p>
+    {% endif %}
+  </section>
+
+  <section class="report-section" aria-labelledby="next-heading">
+    <h2 id="next-heading">Next steps</h2>
+    <ol class="next-steps">
+      {% for step in plan.next_steps %}
+      <li>{{ step }}</li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <section class="report-section disclaimer" aria-labelledby="disclaimer-heading">
+    <h2 id="disclaimer-heading">What this plan is — and isn't</h2>
+    <div class="chip-row">
+      <span class="chip chip--draft"
+            data-explainer="This wording is awaiting attorney review before public release.">
+        <span class="dot"></span>Draft — pending legal review</span>
+    </div>
+    <p>This tool provides estimates and recommendations for informational purposes only.
+      It does not constitute a professional property inspection, appraisal, or legal advice.
+      Output does not create, fulfill, or substitute for seller disclosure obligations under
+      applicable state law. This tool does not constitute a home inspection under any state's
+      home inspection licensing statute. Output does not represent a licensed inspection or
+      the findings of a licensed home inspector in any jurisdiction. Consult a licensed
+      inspector, appraiser, and/or real estate attorney before making decisions based on
+      this analysis.</p>
+  </section>
+
+  <div class="change-answers">
+    <a class="btn-quiet" href="/intake/{{ session_id }}/q/objective">Change my answers</a>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="/static/js/report.js"></script>{% endblock %}
+

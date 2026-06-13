@@ -1,0 +1,79 @@
+# Property ROI Analysis Tool — Duration/Lead-Time Seed Table v1.0
+
+**Artifact:** Duration/Lead-Time Seed Table  
+**Version:** v1.0  
+**Date:** June 2026  
+**Status:** Draft seed-table artifact; owner-approved direction with row-level source QA still required  
+**Prepared by:** Manus AI  
+**Governing Sources:** PRD v0.8, Decisions Log V11, Technical Specification V2, Static Data Source Register V1, Home Improvement Project Duration Estimates
+
+## 1. Purpose
+
+This artifact converts the 13 previously missing duration and lead-time repair types into a governed seed-table format for the Scarcity-Aware Seller Action Sequencer. These rows support schedule feasibility, target-list-date warnings, carrying-cost logic, and the placement of recommendations into main-plan, urgent, constrained, beyond-timeline, or not-recommended categories.
+
+Decisions Log V11 formally approved two important changes: **Accessibility improvements must be split into subtypes**, and **professional staging must trigger a timeline anomaly when the target list date is fewer than 21 days away**.[1]
+
+## 2. Governance Status
+
+| Governance Item | Status |
+|---|---|
+| 13 missing repair types classified as sequencer-required | Approved by D-V11-003 |
+| Accessibility split | Approved by D-V11-001 |
+| Staging under-21-days anomaly | Approved by D-V11-002 |
+| Angi/HomeAdvisor-derived values as Phase 1 static assumptions v1.0 | Approved by D-V11-004 |
+| Row-level source URL, access date, and citation QA | Still open |
+| GC/remodeling PM validation | Still open for dependency rules; recommended for duration reasonableness |
+
+## 3. Duration/Lead-Time Rows
+
+The following rows should be converted into `duration_lead_time_rules` records. For accessibility, the broad row is intentionally replaced by subtype rows. Where subtype lead-time evidence has not yet been source-verified, the row is marked for source QA rather than treated as final.
+
+| Rule ID | Repair Type | Parent Repair Type | Tier | Duration Low (days) | Duration High (days) | Lead Time Low (days) | Lead Time High (days) | Source Basis | Review Status | Decision Reference | Notes |
+|---|---|---|---:|---:|---:|---:|---:|---|---|---|---|
+| DLT-013 | Non-functional minor systems | — | 2 | 0.5 | 2 | 1 | 7 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Depends on part availability. |
+| DLT-014 | HVAC filter / tune-up | — | 2 | 0.125 | 0.25 | 1 | 5 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | 1–2 hours; next-day typical. |
+| DLT-015 | Worn deck / porch boards | — | 2 | 1 | 5 | 3 | 14 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Board-count dependent. |
+| DLT-010 | Caulking / weatherstripping | — | 2 | 0.25 | 1 | 0 | 2 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | DIY-friendly; same-day possible. |
+| DLT-016 | Cracked driveway / walkway | — | 2 | 1 | 3 | 3 | 10 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Cure time may add days. |
+| DLT-017 | Window seal failure | — | 2 | 0.5 | 2 | 7 | 21 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Glass unit order lead time. |
+| DLT-020 | Kitchen cabinet hardware update | — | 3 | 0.25 | 1 | 2 | 7 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Hardware shipping dependent. |
+| DLT-021 | Fixture replacement | — | 3 | 0.25 | 1 | 1 | 7 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Conditional on plumbing/electrical scope. |
+| DLT-022 | Landscaping / curb appeal | — | 3 | 1 | 5 | 1 | 7 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Scope-dependent; dependency rules may require sewer/septic work first. |
+| DLT-024 | Professional staging | — | 3 | 0.5 | 1 | 7 | 21 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-002 / D-V11-003 / D-V11-004 | Must trigger anomaly when target list date is fewer than 21 days away. |
+| DLT-025 | Professional photography | — | 3 | 0.25 | 0.5 | 3 | 14 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | 2–4 hour shoot. |
+| DLT-027 | Closet organization | — | 3 | 0.5 | 2 | 3 | 14 | Angi/HomeAdvisor published guidance, row-level citation pending | proposed_pending_source_QA | D-V11-003 / D-V11-004 | Custom systems add lead time. |
+| DLT-030A | Minor accessibility improvements | Accessibility improvements | 3 | 0.25 | 0.5 | TBD | TBD | Owner-approved subtype split; source QA pending | proposed_pending_source_QA | D-V11-001 | Covers grab bars and minor threshold-level modifications. User-provided working note says grab-bar install is approximately 2–4 hours; lead-time evidence still requires row-level source QA. |
+| DLT-030B | Exterior access modifications | Accessibility improvements | 3 | 2 | 3 | TBD | TBD | Owner-approved subtype split; source QA pending | proposed_pending_source_QA | D-V11-001 | Covers ramps and larger access-path changes. User-provided working note says ramp work is approximately 2–3 days; lead-time evidence still requires row-level source QA. |
+| DLT-030-REPLACED | Accessibility improvements | — | 3 | 1 | 5 | 7 | 21 | Prior broad proposed range | replaced_by_subtypes | D-V11-001 | Retained for traceability only. Do not use this broad row for engine sequencing unless subtyping is unavailable during migration. |
+
+## 4. Required Database Fields
+
+The application seed table should preserve both executable numeric values and governance metadata. The minimum table shape remains consistent with Technical Specification V2, but should be expanded with review metadata in Technical Specification V3.
+
+| Field | Requirement |
+|---|---|
+| `rule_id` | Stable identifier, such as `DLT-024`. |
+| `repair_type` | Canonical engine repair type or subtype. |
+| `parent_repair_type` | Nullable parent category; required for accessibility subtype rows. |
+| `tier` | MVP tier for the recommendation. |
+| `duration_low_days` | Numeric low duration where source-supported. |
+| `duration_high_days` | Numeric high duration where source-supported. |
+| `lead_time_low_days` | Numeric low lead time where source-supported; nullable if pending source QA. |
+| `lead_time_high_days` | Numeric high lead time where source-supported; nullable if pending source QA. |
+| `source_reference` | Specific source citation or workpaper reference. |
+| `review_status` | `proposed_pending_source_QA`, `approved_by_owner`, `expert_validated`, `deprecated`, or equivalent. |
+| `version` | Seed-table version, starting with `v1.0`. |
+| `decision_reference` | Relevant decision ID from Decisions Log V11. |
+
+## 5. Sequencer Implications
+
+The sequencer should not use generic timing fallback logic for these repair types once the seed table is loaded. If a row remains pending source QA, the engine should either block final readiness or clearly label the value as a static assumption in internal traces. Professional staging requires a specific anomaly rule when the target list date is inside the 21-day upper lead-time window.
+
+Accessibility requires a parent-child modeling choice. The recommended implementation is to show a readable parent label to the seller when appropriate, while using the subtype row internally for timing, sequencing, cost, dependency, and anomaly logic.
+
+## 6. References
+
+[1]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V11.md "Property ROI Analysis Tool — Decisions Log V11"  
+[2]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Technical%20Specification%20V2.md "Property ROI Analysis Tool — Technical Specification V2"  
+[3]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Static%20Data%20Source%20Register%20and%20Download%20Checklist%20V1.doc "Property ROI Analysis Tool — Static Data Source Register and Download Checklist V1"  
+[4]: /home/ubuntu/upload/HomeImprovementProjectDurationEstimates "Home Improvement Project Duration Estimates"  

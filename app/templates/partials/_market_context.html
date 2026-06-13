@@ -1,0 +1,42 @@
+<section class="report-section market-context" aria-labelledby="market-heading">
+  <h2 id="market-heading">Local market context</h2>
+
+  {% if market_context and market_context.available %}
+  <p class="section-sub">
+    Recorded sales
+    {% if market_context.scope == 'zip' %}in your ZIP code{% else %}across your metro area{% endif %}
+    over the last {{ market_context.window_months }} months — context only,
+    not an estimate of your home's value.
+  </p>
+
+  <div class="facts-row">
+    <div class="fact"><b>{{ market_context.comp_count }}</b><span>Recorded sales</span></div>
+    <div class="fact"><b>{{ market_context.median_price }}</b><span>Median sale</span></div>
+    <div class="fact"><b>{{ market_context.price_band }}</b><span>Middle 50% of sales</span></div>
+    {% if market_context.median_ppsf %}
+    <div class="fact"><b>{{ market_context.median_ppsf }}</b><span>Median $/sq ft ({{ market_context.ppsf_count }} sales)</span></div>
+    {% endif %}
+  </div>
+
+  <div class="chip-row">
+    <span class="chip chip--records"
+          data-explainer="Recorded residential sales from public county records, via a property data provider.">
+      <span class="dot"></span>County sale records</span>
+    <span class="chip chip--records"
+          data-explainer="The most recent recorded sale in this comparison set.">
+      <span class="dot"></span>Data through {{ market_context.data_through | friendly_date }}</span>
+    <span class="chip {{ 'chip--records' if market_context.support == 'strong' else 'chip--assumed' }}"
+          data-explainer="{% if market_context.support == 'strong' %}At least 10 recent recorded sales in your ZIP back these numbers.{% else %}Fewer recent sales nearby — read these ranges loosely.{% endif %}">
+      <span class="dot"></span>{{ market_context.support_label }}</span>
+  </div>
+
+  <p class="fineprint">These are recorded sales near you, shown for context.
+    They are not an appraisal, an estimate of your home's value, or a
+    prediction of what any project returns.</p>
+
+  {% else %}
+  <p class="section-sub">Local sale-price calibration isn't available for your
+    market yet. Your plan doesn't depend on it — recommendations above stand
+    on their own.</p>
+  {% endif %}
+</section>

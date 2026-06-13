@@ -1,0 +1,44 @@
+# Property ROI Analysis Tool — Open Questions Log V1
+
+**Artifact:** Open Questions Log  
+**Version:** V1  
+**Date:** June 2026  
+**Status:** Active project-governance artifact  
+**Prepared by:** Manus AI  
+**Governing Sources:** PRD v0.8, Decisions Log V10, Decisions Log V11, Technical Specification V2
+
+## 1. Purpose
+
+This Open Questions Log tracks unresolved product, data, legal, technical, and sequencing questions that affect implementation readiness. Questions that are resolved should remain in the log for traceability but must point to the decision record or artifact that now governs the answer.
+
+## 2. Recently Resolved Questions
+
+The following questions were open during the duration/lead-time and sequencing review and are now resolved by **Decisions Log V11**.
+
+| Question ID | Question | Resolution | Decision Reference | Status | Downstream Artifact Impact |
+|---|---|---|---|---|---|
+| OQ-SEQ-001 | Should **Accessibility improvements** be split into subtypes, or should the product use one conservative range covering the common case? | Split into subtypes. MVP should distinguish minor accessibility improvements, such as grab bars and threshold-level modifications, from larger exterior access modifications, such as ramps or access-path changes. | D-V11-001 | Resolved | Recommendation catalog, duration/lead-time seed table, dependency rules, Technical Specification V3 |
+| OQ-SEQ-002 | Should **Professional staging** trigger an anomaly callout when staging is in the plan and the target list date is less than 21 days away? | Yes. If professional staging is recommended and the target list date is fewer than 21 calendar days away, the engine should trigger a staging timeline-risk anomaly. | D-V11-002 | Resolved | Recommendation anomaly rules, duration/lead-time rules, report-output logic, Technical Specification V3 |
+
+## 3. Current Open Questions
+
+The following questions remain open and should be resolved before implementation reaches the affected subsystem.
+
+| Question ID | Question | Why It Matters | Recommended Owner / Reviewer | Required Before | Status |
+|---|---|---|---|---|---|
+| OQ-DATA-001 | What exact final source citations, URLs, and access dates should be attached to each Angi/HomeAdvisor-derived duration and lead-time row? | The seed table must be auditable and defensible; generic source names are not enough for long-term governance. | Product owner / data reviewer | Final seed-table approval | Open |
+| OQ-SEQ-003 | Has an experienced GC, remodeling PM, or equivalent expert validated the dependency rules and critical-path flags? | Technical Specification V2 and the Static Data Source Register treat dependency rules as a build blocker before sequencer coding. | Product owner / construction reviewer | Sequencer coding | Open |
+| OQ-SEQ-004 | Should accessibility subtypes also have separate DOM-impact rows, or should DOM impact inherit from the parent accessibility category while duration/lead-time differs by subtype? | Splitting duration taxonomy may create mismatch unless recommendation catalog, DOM impact, and sequencing taxonomy are aligned. | Product owner / product architect | Recommendation catalog finalization | Open |
+| OQ-ANOM-001 | What exact user-facing language should be used for the professional staging under-21-days anomaly? | The approved rule exists, but the copy must avoid sounding absolute while still warning the seller clearly. | Product owner / UX writer / legal reviewer | Report-output specification | Open |
+| OQ-GOV-001 | Should the duration/lead-time seed table be marked `approved_by_owner` immediately, or `proposed_pending_source_QA` until source URLs and dates are attached row by row? | This affects whether Technical Specification V3 can describe the duration table as complete or conditionally complete. | Product owner | Technical Specification V3 signoff | Open |
+
+## 4. Logging Rule Going Forward
+
+Questions should be added here when they require owner, legal, data, expert, or architecture judgment before implementation. Once resolved, they should not be deleted; they should move to the resolved section with a reference to the governing decision, specification section, or artifact version.
+
+## 5. References
+
+[1]: ./Property_ROI_Analysis_Tool_PRD_v0_8.doc "Property ROI Analysis Tool — Product Requirements Document v0.8"  
+[2]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V10.doc "Property ROI Analysis Tool — Decisions Log V10"  
+[3]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V11.md "Property ROI Analysis Tool — Decisions Log V11"  
+[4]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Technical%20Specification%20V2.md "Property ROI Analysis Tool — Technical Specification V2"  

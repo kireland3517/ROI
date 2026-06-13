@@ -1,0 +1,57 @@
+<section class="report-section" aria-labelledby="property-heading">
+  <h2 id="property-heading">Your property</h2>
+
+  {% if plan.property_summary.fallback_warning %}
+  <div class="warning" role="status">
+    <span>County records were unavailable, so these details come from you.
+      Fix anything that's off — the plan updates.</span>
+  </div>
+  {% elif plan.property_summary.partial_warning %}
+  <div class="warning" role="status">
+    <span>County records were incomplete for this property.
+      Fill in the missing details below — the plan updates.</span>
+  </div>
+  {% endif %}
+
+  <div class="facts-row">
+    <div class="fact"><b>{{ facts.beds if facts.beds else '—' }}</b><span>Beds</span></div>
+    <div class="fact"><b>{{ facts.baths if facts.baths else '—' }}</b><span>Baths</span></div>
+    <div class="fact"><b>{{ '{:,}'.format(facts.sqft) if facts.sqft else '—' }}</b><span>Sq ft</span></div>
+    <div class="fact"><b>{{ facts.year_built if facts.year_built else '—' }}</b><span>Year built</span></div>
+  </div>
+
+  <div class="chip-row">
+    {% if facts.source == 'attom' %}
+    <span class="chip chip--records"
+          data-explainer="Public county assessor and recorder data, via a property data provider.">
+      <span class="dot"></span>{% if plan.property_summary.partial_warning %}County records (partial), pulled{% else %}County records, pulled{% endif %} {{ facts.pulled_at | friendly_date }}</span>
+    {% elif facts.source == 'user_confirmed' %}
+    <span class="chip chip--answer"><span class="dot"></span>Confirmed by you</span>
+    {% else %}
+    <span class="chip chip--assumed"><span class="dot"></span>Based on your entries</span>
+    {% endif %}
+  </div>
+
+  <details class="facts-edit">
+    <summary>Fix property details</summary>
+    <form method="post" action="/plan/{{ session_id }}/facts">
+      <div>
+        <label for="beds">Beds</label>
+        <input type="number" id="beds" name="beds" min="0" step="1" value="{{ facts.beds or '' }}">
+      </div>
+      <div>
+        <label for="baths">Baths</label>
+        <input type="number" id="baths" name="baths" min="0" step="0.5" value="{{ facts.baths or '' }}">
+      </div>
+      <div>
+        <label for="sqft">Square feet</label>
+        <input type="number" id="sqft" name="sqft" min="0" step="1" value="{{ facts.sqft or '' }}">
+      </div>
+      <div>
+        <label for="year_built">Year built</label>
+        <input type="number" id="year_built" name="year_built" min="1700" step="1" value="{{ facts.year_built or '' }}">
+      </div>
+      <button type="submit" class="btn">Save and update my plan</button>
+    </form>
+  </details>
+</section>

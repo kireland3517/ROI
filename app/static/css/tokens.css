@@ -1,0 +1,48 @@
+/* Design tokens — "the surveyor's report, made warm".
+   Palette roles, type roles, spacing scale. Define here, consume everywhere. */
+
+:root {
+  /* Palette roles */
+  --paper: #f7f7f4;
+  --paper-raised: #fffffd;
+  --ink: #20231f;
+  --ink-muted: #6b7066;
+  --ink-10: rgba(32, 35, 31, 0.1);
+  --ink-06: rgba(32, 35, 31, 0.06);
+  --field: #1e5743;        /* primary actions, selected, "go" */
+  --field-tint: #e7efeb;
+  --horizon: #b0762b;      /* timeline rail + date marker ONLY */
+  --horizon-tint: #f5ead9;
+  --urgent: #a8402f;
+  --urgent-tint: #f6e7e4;
+  --caution: #9a7b1e;
+  --caution-tint: #f5efdc;
+
+  /* Type roles */
+  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-utility: 'Spline Sans Mono', ui-monospace, monospace;
+
+  /* Type scale */
+  --text-xs: 13px;
+  --text-sm: 15px;
+  --text-md: 17px;
+  --text-lg: 21px;
+  --text-xl: 26px;
+  --text-2xl: 33px;
+
+  /* Spacing scale (4px base) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-18: 72px;
+
+  --radius: 8px;
+  --radius-sm: 4px;
+  --content-narrow: 28rem;
+  --content-wide: 44rem;
+}

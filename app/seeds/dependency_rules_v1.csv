@@ -1,0 +1,32 @@
+rule_id,repair_type,depends_on_repair_type,dependency_type,critical_path_flag,review_status,decision_reference,source_reference,version
+1,Roof replacement / major repair,,,,pending,,,1
+2,Foundation crack repair,,,,pending,,,1
+3,Active water intrusion / leak,,,,pending,,,1
+4,Mold remediation,"Active water intrusion / leak, Broken plumbing active, Roof replacement / major repair",hard,1.0,pending,D-V11-003,ANSI/IICRC S520 Standard for Professional Mold Remediation,1
+5,Knob-and-tube wiring replacement,,,,pending,,,1
+6,Failed HVAC replacement,,,,pending,,,1
+7,Broken plumbing active,,,,pending,,,1
+8,Electrical panel upgrade,,,,pending,,,1
+9,Septic / sewer line failure,,,,pending,,,1
+10,Caulking / weatherstripping,,,,pending,,,1
+11,Gutter repair / replacement,Roof replacement / major repair,hard,1.0,pending,D-V11-003,IRC roofing requirements - gutters must integrate with drip edge,1
+12,Peeling exterior paint,,,,pending,,,1
+13,Non-functional minor systems,,,,pending,,,1
+14,HVAC filter / tune-up,,,,pending,,,1
+15,Worn deck / porch boards,,,,pending,,,1
+16,Cracked driveway / walkway,,,,pending,,,1
+17,Window seal failure,,,,pending,,,1
+18,Interior paint,"Active water intrusion / leak, Flooring refinish or replacement",hard,1.0,pending,D-V11-003,NAHB moisture guidelines; NAHB schedule template,1
+19,Flooring refinish or replacement,Active water intrusion / leak,hard,1.0,pending,D-V11-003,NAHB Model Green Home Building Guidelines moisture testing requirement,1
+20,Kitchen cabinet hardware update,,,,pending,,,1
+21,Fixture replacement,"Broken plumbing active, Failed HVAC replacement, Knob-and-tube wiring replacement, Electrical panel upgrade",hard,1.0,pending,D-V11-003,IRC R109.1.2 rough inspection required before fixture installation,1
+22,Landscaping / curb appeal,Septic / sewer line failure,hard,1.0,pending,D-V11-003,NAHB Land Development Checklist - subterranean utilities before surface landscaping,1
+23,Deep cleaning / declutter,"Roof replacement / major repair, Flooring refinish or replacement, Interior paint, Mold remediation, Knob-and-tube wiring replacement, Failed HVAC replacement, Broken plumbing active, Bathroom cosmetic refresh",hard,1.0,pending,D-V11-003,NAHB residential construction timeline - cleaning is final step,1
+24,Professional staging,,,,pending,,,1
+25,Professional photography,,,,pending,,,1
+26,Bathroom cosmetic refresh,"Active water intrusion / leak, Broken plumbing active",hard,1.0,pending,D-V11-003,Bathroom remodel sequencing - moisture source must be resolved first,1
+27,Closet organization,,,,pending,,,1
+28,Garage door repair or replacement,,,,pending,,,1
+29,Attic insulation,"Knob-and-tube wiring replacement, Roof replacement / major repair",hard,1.0,pending,D-V11-003,NEC 394.12 prohibits insulation over knob-and-tube wiring; IRC dried-in requirement,1
+30,Accessibility improvements,,,,pending,,,1
+31,Exterior access modifications,,,,pending,,,1

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Building your plan{% endblock %}
+
+{% block content %}
+<div class="col-narrow building fade-slide">
+  <h1>Building your plan</h1>
+  <ul class="status-lines" data-status-lines>
+    <li>Checking county property records&hellip;</li>
+    <li>Sizing actions against your timeline&hellip;</li>
+    <li>Sorting what's worth it from what isn't&hellip;</li>
+  </ul>
+  <noscript>
+    <p><a class="btn" href="/plan/{{ session_id }}">See my plan</a></p>
+  </noscript>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  'use strict';
+  var lines = document.querySelectorAll('[data-status-lines] li');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  lines.forEach(function (line, index) {
+    window.setTimeout(function () {
+      line.classList.add('shown');
+    }, reduced ? 0 : 250 + index * 800);
+  });
+
+  var started = Date.now();
+  var minimumMs = reduced ? 0 : 2400;
+  fetch('/plan/{{ session_id }}/generate', { method: 'POST' })
+    .then(function () {
+      var wait = Math.max(0, minimumMs - (Date.now() - started));
+      window.setTimeout(function () {
+        window.location.href = '/plan/{{ session_id }}';
+      }, wait);
+    })
+    .catch(function () {
+      // The plan route generates synchronously as a fallback.
+      window.location.href = '/plan/{{ session_id }}';
+    });
+})();
+</script>
+{% endblock %}

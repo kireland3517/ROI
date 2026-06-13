@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Plan what to fix before you list{% endblock %}
+
+{% block content %}
+<div class="col-narrow address-hero fade-slide">
+  <h1>Plan what to fix before you list.</h1>
+  <p class="lede">Four questions. A plan in about two minutes. No account needed.</p>
+
+  {% if error %}
+  <div class="field-error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form class="address-form" method="post" action="/intake/address" data-address-form>
+    <label class="fineprint" for="address">Property address</label>
+    <div class="suggest-wrap" data-suggest>
+      <input type="text" id="address" name="address" value="{{ address_value }}"
+             placeholder="123 Maple St, Springfield, IL 62704" autocomplete="off"
+             role="combobox" aria-expanded="false" aria-controls="address-suggestions"
+             aria-autocomplete="list" autofocus required>
+      <ul class="suggest-list" id="address-suggestions" role="listbox"
+          aria-label="Address suggestions" hidden></ul>
+    </div>
+    <button type="submit" class="btn btn--full">Find my property</button>
+  </form>
+
+  <p class="fineprint">We only use your address to look up public property records.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="/static/js/intake.js"></script>{% endblock %}

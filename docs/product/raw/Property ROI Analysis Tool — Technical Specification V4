@@ -1,0 +1,606 @@
+# Property ROI Analysis Tool — Technical Specification V4
+
+**Artifact:** Technical Specification  
+**Version:** V4  
+**Date:** June 2026  
+**Status:** Consolidated specification draft; not implementation-ready until readiness gates are closed  
+**Prepared by:** Manus AI  
+**Primary Governing Sources:** PRD v0.8 from Google Drive folder `ROI Tool`, Decisions Log V10, Decisions Log V11, Decisions Log V12  
+**Consolidates:** Technical Specification V3, Technical Specification V3 Sequencer Update, Duration/Lead-Time Seed Table v1.0, Dependency Rules v1.0 Addendum, Recommendation Anomaly Rules v1.0, Static Data Source Register V2 Addendum, Regression Model Registry and Promotion Governance v1.0, Greenville Smoke Regression Result Assessment, Cursor Regression Implementation Capture
+
+## 1. Executive Summary
+
+The Property ROI Analysis Tool is a seller-facing planning system whose central product question is: **“What should this seller spend money on, in what order, and why?”** The system must intake property information, seller constraints, market context, repair or improvement opportunities, and governed source data to produce a prioritized pre-sale action plan. The MVP should remain the smallest high-value product that can rank, explain, and sequence seller actions without overpromising valuation precision, model certainty, or operational feasibility.[1]
+
+Technical Specification V4 replaces Technical Specification V3 as the current implementation-control document. V4 preserves the core architecture, sequencing, governance, and legal posture from V3, while incorporating the newer regression-governance decisions from Decisions Log V12. The most important V4 updates are: **corrected ATTOM sale-date mapping**, **Greenville corrected comparable-sales fixture treatment**, **explicit distinction between pipeline validation and production calibration**, **versioned model-registry artifacts**, **model-registry validation and promotion gates**, and **recommendation-engine refusal of unapproved coefficient artifacts**.[4] [5] [6] [7]
+
+> **V4 implementation posture:** The project has advanced from “regression input data blocked” to “Greenville smoke pipeline runnable and structurally validated,” but it is still **not ready to wire regression coefficients into seller-facing recommendations**. The Greenville v0.1 artifact is diagnostic-only and must remain unavailable to recommendation logic unless a future decision record explicitly approves a later artifact and the artifact itself is marked `approved_for_recommendations: true`.[4] [5]
+
+## 2. Version Authority and Supersession Rules
+
+This document is the consolidated V4 specification. Where V3 conflicts with Decisions Log V12, V12 governs for regression, model-registry, ATTOM sale-date, and promotion-gate topics. Where V3 conflicts with Decisions Log V10 or V11 on architecture, sequencing, duration, dependency, accessibility, or anomaly-rule topics, those prior decisions continue to govern unless explicitly superseded by V12.
+
+| Artifact | Role in V4 | Authority Level |
+|---|---|---|
+| PRD v0.8 | Defines product mission, MVP scope, seller workflow, and business purpose | Highest product authority |
+| Decisions Log V10 | Governs platform portability, data-source governance, regression calibration posture, and pre-implementation readiness decisions | Highest technical-governance authority before V11 |
+| Decisions Log V11 | Governs accessibility subtype split, staging anomaly, and duration/lead-time coverage decisions | Highest sequencer-governance authority |
+| Decisions Log V12 | Governs ATTOM sale-date mapping, Greenville smoke fixture, model-registry artifacts, registry validation, promotion gates, API usage restraint, and refusal of unapproved coefficients | Highest regression-governance authority |
+| Technical Specification V3 | Base consolidated architecture and schema source | Superseded by V4 where updated |
+| Regression Model Registry and Promotion Governance v1.0 | Defines model artifact lifecycle and product-consumption rules | Required V4 regression-governance artifact |
+| Greenville Smoke Regression Result Assessment | Defines Greenville smoke-test interpretation and next diagnostic step | Required V4 regression-readiness artifact |
+| Cursor Regression Implementation Capture | Records owner-reported artifact paths and validator behavior | Implementation-status evidence, not independent approval |
+| Duration/Lead-Time Seed Table v1.0 | Executable timing seed-table draft for sequencer | Required MVP seed family, pending source QA |
+| Dependency Rules v1.0 Addendum | Dependency-rule governance and readiness status | Required MVP seed family, pending matrix export and expert validation |
+| Recommendation Anomaly Rules v1.0 | First approved anomaly rule and anomaly seed-table shape | Required MVP seed family |
+| Static Data Source Register V2 Addendum | Source-governance updates for duration, sequencing, and provenance | Required source-register update |
+
+## 3. Product and Technical Scope
+
+The MVP must help sellers choose among candidate repairs, listing-preparation tasks, and pre-sale improvements by estimating expected seller value, feasibility, timing risk, and sequencing order. The tool should explain recommendations in plain language and avoid unsupported precision.
+
+| Scope Area | MVP Treatment | Later Phase Treatment | Rejected / Deferred Treatment |
+|---|---|---|---|
+| Seller action prioritization | Required | Refine with observed outcomes and richer calibration | Do not ship generic home-improvement advice without seller-specific prioritization |
+| ROI recommendation engine | Required with bounded static assumptions, confidence labels, and refusal of unapproved models | Improve through approved market calibration, observed outcomes, and richer property attributes | Do not use diagnostic regression coefficients in seller-facing recommendations |
+| Scarcity-aware sequencing | Required, but coding blocked until seed gates close | Add contractor availability, live scheduling, and more dynamic constraints | Do not rely on generic fallback timing for sequencer-required items |
+| Professional staging anomaly | Required | Add more anomaly rules for source quality, extreme timeline compression, and dependency conflicts | Do not silently suppress staging solely because timing is short |
+| Accessibility subtype handling | Required | Add richer subtypes if supported by source evidence and observed use | Do not use one broad accessibility timing range for all cases |
+| Regression calibration | Required as governed analysis path, not as blind coefficient generation | Add empirical recalibration by market and property type after promotion gates | Do not estimate or consume coefficients for attributes absent from valid training data |
+| Model registry and promotion governance | Required | Promote approved models into database-backed registry if warranted | Do not hardcode coefficients or load artifacts with `approved_for_recommendations: false` |
+| Legal/compliance review | Required before public release | Continue review as jurisdictions and claim language expand | Do not present recommendations as legal, appraisal, tax, or contractor guarantees |
+
+## 4. System Architecture
+
+V4 adopts the **portable modular architecture** established in V3. The application should be structured around clear internal service boundaries so hosting, storage, scheduled jobs, external integrations, model artifacts, and recommendation logic can be swapped or hardened without rewriting the core product workflow.[2]
+
+The architecture must include a frontend application, backend application services, relational persistence, private object storage, external data adapters, scheduled ingestion jobs, static seed-data management, model-artifact governance, recommendation-engine services, report-generation services, and governance/audit logging.
+
+| Layer | Responsibility | MVP Requirement |
+|---|---|---|
+| Frontend | Collect seller/property inputs and present prioritized action plans | Mobile-responsive web interface with clear input guidance and explanation-heavy outputs |
+| Backend API | Validate inputs, orchestrate data retrieval, load approved artifacts, run recommendation logic, and persist sessions | Server-side API with authenticated access if user accounts are included in MVP release |
+| Recommendation Engine | Score, rank, sequence, constrain, and explain seller actions | Deterministic, traceable, seed-table-driven rules plus only approved calibration artifacts |
+| Model Artifact Layer | Load, validate, and gate regression/model artifacts | Must refuse diagnostic, candidate, retired, rejected, structurally invalid, or unapproved artifacts |
+| Data Layer | Store users, properties, analysis runs, recommendations, seed tables, model metadata, traces, and source metadata | Relational database with versioned seed data and audit fields |
+| Object Storage | Store generated reports, uploaded files, downloaded static datasets, fixtures, model artifacts, and workpapers | Private storage with backend-generated short-lived signed access URLs |
+| Integration Layer | Encapsulate ATTOM, Census, ACS, HUD, FHFA, Redfin, or similar external data sources | Adapter pattern with source-status logging, corrected field mapping, and graceful degradation |
+| Scheduled Jobs | Refresh static datasets and market source pulls | Provider-neutral scheduler; implementation provider deferred |
+| Governance Layer | Track source provenance, decisions, seed versions, model versions, confidence status, and promotion approvals | Required for auditability and defensibility |
+
+## 5. Provider-Neutral Deployment Architecture
+
+Technical Specification V2 contained Azure-specific implementation details. Decisions Log V10 superseded that posture by approving a portable architecture. Azure may remain an acceptable deployment candidate, but V4 must not require Azure-only services unless a future decision explicitly reintroduces that constraint.[2]
+
+| Capability | V2 Azure-Centered Example | V4 Provider-Neutral Requirement |
+|---|---|---|
+| Static/object storage | Azure Blob Storage with SAS URLs | Private object storage with backend-generated short-lived signed URLs; Azure Blob, Supabase Storage, S3-compatible storage, or equivalent are acceptable candidates |
+| Secret management | Azure Key Vault | Server-side secrets; environment variables acceptable for prototype, managed vault preferred for production hardening |
+| Scheduled ingestion | Azure Functions Timer Trigger | Weekly scheduled ingestion through GitHub Actions cron, managed cron, Azure Functions, server scheduler, or equivalent provider-neutral mechanism |
+| Hosting | Azure-oriented deployment assumptions | Web host and backend host may be selected based on cost, portability, operational burden, and integration fit |
+| External data adapters | Service-specific implementation assumptions | Adapter interfaces must isolate provider SDKs, API-specific response formats, and source-path mappings |
+| Model artifacts | Not previously explicit | Store registry artifacts in controlled file paths for development; later promote approved model metadata and coefficients into database tables if required |
+
+## 6. Frontend Architecture
+
+The frontend should be a responsive web application optimized for seller decision-making. The interface must make tradeoffs visible: estimated value impact, expected cost, timing constraints, dependency ordering, confidence level, and explanation. The MVP should avoid excessive configuration screens and should prioritize a guided workflow that collects only the minimum information needed to answer the core seller question.[1]
+
+The frontend must not expose regression coefficients, raw model artifacts, API keys, or internal diagnostics. If model-calibrated estimates are later approved for seller-facing use, the frontend should display confidence-qualified output and plain-language reasoning rather than model internals.
+
+| Frontend Area | Requirement | UX Risk |
+|---|---|---|
+| Property intake | Capture address or property identifier, property facts, seller timeline, budget, and listing goals | Excessive intake burden could reduce completion |
+| Improvement intake | Support selected known repairs, observed property issues, optional photos or inspection notes if included in scope | Free-text repairs may create taxonomy ambiguity |
+| Recommendation review | Present prioritized plan with “do first,” “do if budget allows,” “urgent,” “constrained,” and “not recommended” style groupings | Seller may misread confidence as guarantee |
+| Timeline view | Show sequenced actions with lead-time warnings and dependency blockers | Sequencing without source-quality labels may appear more certain than it is |
+| Report output | Provide explanation-rich summary that can be shared or reviewed later | Report language requires legal/UX review before public release |
+| Mobile behavior | Support mobile-first use cases for quick review and data entry | Complex tables and charts must degrade gracefully |
+| Model-confidence copy | Explain whether value logic is static, diagnostic, candidate, or approved calibration where relevant | Overexposure of model jargon may confuse sellers; underexposure may overstate certainty |
+
+## 7. Backend Architecture
+
+The backend should enforce validation, authorization, orchestration, source isolation, model-artifact gating, and traceability. Recommendation logic should not live directly in UI components. External data calls should pass through integration adapters, and recommendation output should preserve enough trace data to explain why each action was recommended, delayed, warned, or rejected.
+
+| Backend Service | Responsibility | MVP Notes |
+|---|---|---|
+| Property Service | Normalize property profile, owner-provided facts, and external property attributes | ATTOM enrichment should be audited before relying on enriched attributes |
+| Market Data Service | Fetch or read market indicators and local comps where available | Must track source date, source confidence, fallback status, and fixture versus production-dataset status |
+| ATTOM Adapter / Export Mapper | Retrieve and normalize ATTOM property and comparable-sales fields | Must implement approved `sale_date` fallback mapping in the mapper, not in regression logic |
+| Model Artifact Loader | Load model-registry artifacts and enforce structural and promotion requirements | Must refuse unapproved artifacts and return safe errors to recommendation services |
+| Recommendation Service | Generate candidate actions, score ROI, apply constraints, sequence actions, and produce explanations | Must be deterministic and traceable in MVP; may use only approved coefficient artifacts |
+| Sequencer Service | Apply duration, lead-time, dependency, budget, and target-list-date constraints | Coding blocked until dependency and source-QA gates close |
+| Anomaly Service | Attach warnings such as staging under 21 days | Separate anomaly handling from ranking and scoring |
+| Report Service | Assemble seller-facing report and traceable internal output | Public copy requires legal/UX review |
+| Source Governance Service | Track static and external source metadata, seed versions, confidence labels, and decision references | Required before implementation readiness |
+| Model Governance Service | Track model status, validation report, promotion readiness, approval decision, and retirement state | Required before coefficients can influence seller-facing output |
+
+## 8. Data Model Overview
+
+V4 requires a relational data model with versioned seed tables, auditable recommendation runs, source provenance, model-artifact metadata, promotion status, and traceable output. The following table defines conceptual entities rather than implementation code.
+
+| Entity / Table Family | Purpose | V4 Requirement |
+|---|---|---|
+| `users` | Stores authenticated users if user accounts are included | MVP scope depends on release model |
+| `properties` | Stores property-level facts, external identifiers, location, physical attributes, and normalized profile data | Must distinguish user-provided facts from external-source facts |
+| `analysis_runs` | Stores each recommendation session and input snapshot | Required for reproducibility |
+| `recommendation_catalog` | Canonical list of repair/improvement types and subtypes | Must support parent-child repair categories |
+| `duration_lead_time_rules` | Duration and lead-time assumptions by repair type/subtype | Required MVP seed table with review metadata |
+| `dependency_rules` | Predecessor and sequencing constraints between repair types | Required MVP seed table; row-level export and expert validation open |
+| `recommendation_anomaly_rules` | Warning rules separate from normal ranking | Must include staging under-21-days rule |
+| `recommendation_results` | Ranked recommendation outputs | Must store category, score, cost, value, timing status, and confidence |
+| `recommendation_trace` | Internal explanation and audit trail | Must persist rule IDs, seed versions, source IDs, anomaly IDs, and model IDs where used |
+| `source_registry` | Source inventory for APIs, static datasets, workpapers, fixtures, model artifacts, and seed tables | Must include source scope, confidence, access date, and review status |
+| `coefficient_sets` | Versioned ROI/hedonic/calibration coefficients | Must distinguish placeholder, owner-approved, diagnostic, candidate, approved, retired, and rejected values |
+| `market_model_versions` | Future database representation of versioned model artifacts | Should store model identity, market, target, model type, status, approval flag, training window, artifact path, and approval decision reference |
+| `market_model_coefficients` | Future database representation of coefficient maps | Should store coefficient names, values, preprocessing context, feature mapping, and model-version relationship |
+| `model_diagnostics` | Future database representation of validation and promotion-readiness outputs | Should store metrics, residual diagnostics, validation report status, promotion-readiness assessment, and reviewer notes |
+
+The current development-approved pattern is file-based model-registry artifacts. Database-backed model storage is not required before diagnostic work continues, but the schema should anticipate eventual promotion if approved models become part of production recommendation flows.[4] [5]
+
+## 9. Source Governance and Data Dependencies
+
+The application must distinguish **external source evidence**, **internal workpapers**, **application-facing seed tables**, **runtime data retrieved through APIs**, **regression fixtures**, **development diagnostics**, and **model-registry artifacts**. Workpapers and external guidance can support seed values, but executable artifacts must be controlled, versioned, and status-labeled. This distinction is essential for auditability and maintenance.[8]
+
+| Source Class | Examples | V4 Treatment |
+|---|---|---|
+| Runtime API | ATTOM property data, Census/ACS, HUD, FHFA, market sources | Accessed through adapters; log source status and response provenance |
+| Static public dataset | Downloaded CSVs, geographic tables, market reference data | Register in Static Data Source Register V2; record download date and refresh expectation |
+| Regression fixture | Corrected Greenville comparable-sales CSV | Retain as known-good local fixture for pipeline validation; do not treat as production calibration by itself |
+| Static workpaper | Home Improvement Project Duration Estimates, Home Improvement Project Sequencing Analysis | Supporting evidence only; not directly executable |
+| Seed table | Duration/lead-time rules, dependency rules, anomaly rules, DOM impact table | Application-facing executable input; versioned and review-status controlled |
+| Development diagnostic | Greenville smoke regression diagnostics JSON | Engineering/model-review evidence only; not product-consumable |
+| Model-registry artifact | `model_registry/greenville_sc/hedonic_ppsf_v0_1.json` | Product artifact pattern; only consumable when structurally valid, approved, and `approved_for_recommendations: true` |
+| Governance artifact | Decisions Logs V10/V11/V12, Open Questions Log | Controls technical direction and unresolved blockers |
+
+The full Static Data Source Register V2 should incorporate addendum rows for duration estimates, sequencing analysis, Angi/HomeAdvisor guidance, Decisions Log V11, duration/lead-time seed table, and regression-governance artifacts where relevant. Each source row should include a canonical source name, artifact path or URL, access date, source scope, confidence label, review status, and decision reference.[8]
+
+## 10. External Integrations and ATTOM Data Mapping
+
+The MVP should use external integrations only where they support the product’s central recommendation mission. Data sources should be evaluated for business value, technical complexity, cost, source coverage, and maintenance burden.
+
+| Integration / Data Source | MVP Role | V4 Requirement |
+|---|---|---|
+| ATTOM | Property facts, possible enriched property attributes, comparable-sales export, and property profile support | Correct `sale_date` mapping is required for comparable-sales exports; enriched endpoint audit remains open for richer fields |
+| Census / ACS | Demographic and geography context where relevant | Use static or API-based ingestion depending on cost and refresh needs |
+| HUD / FHFA | Housing and market reference data where useful | Register datasets and refresh assumptions |
+| Redfin / market pull process | Market/comp-related supporting data if used | Weekly scheduled ingestion required if adopted; scheduler provider deferred |
+| Angi/HomeAdvisor guidance | Phase 1 static duration and lead-time assumptions | Acceptable as static assumption v1.0 only after row-level citation QA |
+| Internal workbooks | Hedonic matrix, static source register, seed data | Convert into versioned seed artifacts with review status |
+
+### 10.1 ATTOM `sale_date` Fallback Mapping
+
+The ATTOM comparable-sales export must populate the application-level `sale_date` field from the actual ATTOM sale snapshot response fields in the following approved order. This logic belongs in the pull/export mapper and must not be repaired downstream inside regression scripts.[4]
+
+| Mapping Priority | ATTOM Response Path | V4 Treatment |
+|---:|---|---|
+| 1 | `sale.saleTransDate` | Approved primary field |
+| 2 | `sale.salesearchdate` | Approved fallback 1 |
+| 3 | `sale.amount.salerecdate` | Approved fallback 2 |
+| Rejected | `sale.amount.saletransdate` | Defective mapping; must not be used as the expected source path |
+
+Every regression fixture or model artifact that relies on ATTOM comparable-sales exports must record the source dataset path, training or filter window, row counts, nonblank `sale_date` coverage, parseable `sale_date` coverage, and date-window coverage. The export process must validate nonblank and parseable `sale_date` coverage before running regression.[4]
+
+## 11. Recommendation Engine Overview
+
+The recommendation engine should be deterministic, explainable, and seed-table-driven in MVP. It should combine seller inputs, property facts, market context, cost assumptions, value-impact estimates, duration and lead-time assumptions, dependency constraints, approved calibration artifacts, and anomaly rules to produce a prioritized action plan.
+
+| Engine Step | Description | Required Trace Output |
+|---|---|---|
+| Input normalization | Convert property, seller, timeline, and candidate improvement data into canonical fields | Input snapshot and normalization warnings |
+| Candidate generation | Identify eligible repair/improvement actions from catalog and property signals | Candidate IDs and trigger reasons |
+| Eligibility filtering | Remove actions outside scope, unsupported by data, or contradicted by seller constraints | Filter reason and data source |
+| Model artifact selection | Select only approved, structurally valid, market-appropriate coefficient artifacts where needed | Model ID, version, market, status, approval flag, validation report reference |
+| ROI scoring | Estimate value contribution, cost, net benefit, and confidence | Coefficient set or seed assumption, source status, confidence label |
+| Timeline feasibility | Apply duration, lead-time, target-list-date, and schedule-window constraints | Duration rule ID and feasibility status |
+| Dependency sequencing | Order actions using dependency rules and critical-path flags | Dependency rule IDs and sequencing rationale |
+| Anomaly detection | Attach warnings that modify explanation or urgency without necessarily suppressing action | Anomaly ID and message template |
+| Output assembly | Produce seller-facing recommendation plan and internal trace | Ranked list, categories, reasons, warnings, and trace IDs |
+
+The recommendation engine must fail closed on model-artifact approval. If a model is diagnostic-only, candidate, retired, rejected, structurally invalid, missing required fields, or marked `approved_for_recommendations: false`, the engine must refuse to consume it and must either fall back to approved static assumptions or return a controlled “model unavailable” status depending on the affected feature.[4] [5]
+
+## 12. ROI, Hedonic, Regression Calibration, and Model Registry Requirements
+
+Regression calibration must not estimate or consume coefficients for attributes missing from the training data. The first regression pass should use only fields with sufficient observed comp-level coverage. Attributes without reliable comp-level data must remain governed placeholder coefficients, owner-reviewed static assumptions, or qualitative recommendation-engine signals until a valid source exists.[2]
+
+V4 adds a stricter model lifecycle. The Greenville smoke regression has passed for pipeline validation only, not for production calibration. A runnable pipeline and structurally valid artifact are necessary but insufficient conditions for recommendation use.[4] [5] [6]
+
+| Calibration State | Meaning | Product May Use for Seller-Facing Recommendations? |
+|---|---|---:|
+| Pipeline-runnable | Script can load data, clean rows, train baseline model, and output diagnostics | No |
+| Diagnostic model | Model exists to evaluate data quality, feature weakness, target choice, and workflow correctness | No |
+| Candidate model | Artifact passed structural validation and is under promotion-readiness review | No |
+| Approved recommendation model | Artifact passed validation, promotion review, manual approval, and has `approved_for_recommendations: true` | Yes |
+| Retired or rejected model | Artifact must not be selected | No |
+
+| Calibration Area | V4 Requirement | Risk if Ignored |
+|---|---|---|
+| Comp-level fields | Use only fields actually present and sufficiently populated in comp data | False precision and unstable coefficients |
+| Richer ATTOM fields | Audit enriched endpoint availability before relying on condition, quality, view, effective year built, or similar attributes | Model may depend on unavailable data |
+| Placeholder coefficients | Label separately from empirical coefficients | Users and developers may treat assumptions as facts |
+| Diagnostic coefficients | Store only in model registry or diagnostics with explicit nonapproval status | Weak models may influence recommendations |
+| Coefficient bounds | Define reasonableness limits and review process | Outlier results may distort rankings |
+| Versioning | Store model version, source, calibration date, training window, status, and approval flag | Recommendations become unreproducible |
+| QA tests | Test sign, magnitude, missingness, sensitivity, validation status, and refusal behavior | Engine may recommend counterintuitive or unsafe priorities |
+
+### 12.1 Model Registry Contract
+
+Each model-registry artifact should be a self-contained JSON document that includes enough metadata to determine how the model was trained, what data it used, whether it is approved, and whether the application is allowed to load it.[5]
+
+| Field Group | Required Content | Reason |
+|---|---|---|
+| Identity | `model_id`, `model_version`, `market`, `model_type`, `target` | Prevents ambiguous coefficient usage |
+| Training scope | `training_window`, `source_dataset_path`, `modeling_dataset_path`, row counts | Ensures reproducibility and date-window accountability |
+| Metrics | `train_r2`, `test_r2`, MAE, RMSE, and future cross-validation metrics | Supports promotion review |
+| Model parameters | `intercept`, `coefficients`, `feature_names`, `input_features` | Allows deterministic scoring |
+| Preprocessing | Scaling, one-hot encoding, target transform, missing-value handling | Prevents misuse of coefficients without required transformations |
+| Governance | `status`, `approved_for_recommendations`, `created_at`, approval notes | Enforces product-safety controls |
+
+The product must not interpret raw coefficient values unless the artifact also specifies preprocessing assumptions. This is especially important because the current Greenville Ridge model uses standardized numeric features; standardized coefficients are not raw-dollar or raw-square-foot effects.[6]
+
+### 12.2 Approved Model Status Values
+
+| Status | Meaning | Product May Use? |
+|---|---|---:|
+| `diagnostic_only` | Artifact exists for pipeline validation, debugging, or model exploration | No |
+| `candidate` | Artifact has passed structural validation and is under promotion review | No |
+| `approved` | Artifact has passed review and is explicitly approved for recommendation use | Yes, only if `approved_for_recommendations: true` |
+| `retired` | Artifact was formerly used or considered but must no longer be selected | No |
+| `rejected` | Artifact failed review and should not be promoted | No |
+
+The application must enforce both conditions for product consumption: `status == "approved"` and `approved_for_recommendations == true`. This dual condition reduces the risk of a single accidental flag change placing a diagnostic model into production.[5]
+
+### 12.3 Current Greenville v0.1 Status
+
+The current Greenville artifact is reported to live at `model_registry/greenville_sc/hedonic_ppsf_v0_1.json`. It contains real trained Ridge values, an intercept of `5.2216`, full coefficient mappings, preprocessing notes, source and modeling dataset paths, status `diagnostic_only`, and `approved_for_recommendations: false`.[6]
+
+| Item | Current Status |
+|---|---|
+| Corrected sale-date data available | Yes, for Greenville smoke test |
+| Local regression pipeline runnable | Yes |
+| Versioned coefficient artifact exists | Yes, per owner-reported Cursor summary |
+| Registry validator exists | Yes, per owner-reported Cursor summary |
+| Registry validation result | PASS, 11/11 checks, per owner-reported Cursor summary |
+| Product approval | No |
+| Recommendation use | Prohibited |
+
+The current Greenville model must remain governed by this rule:[5]
+
+```json
+{
+  "status": "diagnostic_only",
+  "approved_for_recommendations": false
+}
+```
+
+No application workflow should load this model for seller-facing ROI recommendations.
+
+## 13. Model Promotion Gates
+
+A model can pass structural validation and still fail promotion. The current Greenville v0.1 artifact is in exactly that category: it validates the artifact pattern, but it remains diagnostic-only.[5]
+
+| Gate | Minimum Requirement Before Approval |
+|---|---|
+| Data validity | Correct `sale_date` coverage, documented source file, documented date window, sufficient usable rows |
+| Reproducibility | Source dataset, modeling dataset, script path, run timestamp, and model artifact must be traceable |
+| Structural validation | Registry validator must pass |
+| Baseline metrics | R², MAE, RMSE, and preferably cross-validation metrics must be recorded |
+| Residual diagnostics | Residuals should be reviewed by ZIP, price band, size band, time period, and other available segments |
+| Coefficient sanity | Coefficient direction and scale must be reviewed for plausibility, especially when standardized features are used |
+| Business usefulness | Model outputs must improve the tool’s ability to rank seller investments, not merely predict prices abstractly |
+| Manual approval | A decision record must explicitly approve the artifact for recommendations |
+
+Automatic approval is rejected. A future approval process must define who may set `approved_for_recommendations` to `true`, what evidence is required, and whether approval is market-specific, model-family-specific, or global.[4] [5]
+
+## 14. Scarcity-Aware Seller Action Sequencer
+
+The sequencer is central to the product mission because it determines not only what the seller should do, but **in what order** and under what timing constraints. The sequencer must account for available time before listing, action duration, lead time, dependencies, budget sequencing, carrying-cost impact, and anomaly warnings.
+
+V4 preserves the V3/V11 position that the 13 previously missing duration/lead-time repair types are legitimate sequencer items and must not rely on generic fallback timing. The `duration_lead_time_rules` table remains a required MVP seed table.[3] [9]
+
+| Sequencer Input | Source | Status |
+|---|---|---|
+| Repair/improvement catalog | Recommendation catalog | Must add parent-child support |
+| Duration and lead-time ranges | Duration/Lead-Time Seed Table v1.0 | Draft complete for 13 rows, source QA open |
+| Dependency ordering | Dependency Rules v1.0 Addendum and future full matrix export | Build blocker until row-exported and expert validated |
+| Target list date | Seller input | Required for timeline feasibility and staging anomaly |
+| Budget constraint | Seller input | Required for prioritization and phased plan generation |
+| Carrying-cost assumptions | Product/financial assumptions | Must be explicit and source-labeled |
+| Anomaly rules | Recommendation Anomaly Rules v1.0 | First MVP rule approved |
+| ROI calibration input | Static assumptions or approved model artifacts only | Diagnostic models are prohibited |
+
+## 15. Duration and Lead-Time Rules
+
+The `duration_lead_time_rules` table must include explicit rows for the 13 previously missing repair types, plus subtype rows for accessibility. The broad accessibility row must be retained only for traceability and migration, not used for engine sequencing where subtype selection is available.[9]
+
+| Field | Requirement |
+|---|---|
+| `rule_id` | Stable timing-rule identifier |
+| `repair_type` | Canonical engine repair type or subtype |
+| `parent_repair_type` | Nullable parent category; required for accessibility subtype rows |
+| `tier` | MVP/phase tier from recommendation taxonomy |
+| `duration_low_days` | Low-end duration estimate |
+| `duration_high_days` | High-end duration estimate |
+| `lead_time_low_days` | Low-end lead time; nullable only if pending source QA |
+| `lead_time_high_days` | High-end lead time; nullable only if pending source QA |
+| `source_reference` | Source citation, workpaper reference, or source-register ID |
+| `review_status` | Controlled status such as `proposed_pending_source_QA`, `approved_by_owner`, `expert_validated`, or `deprecated` |
+| `version` | Seed-table version |
+| `decision_reference` | Governing decision ID |
+
+The seed rows are conditionally usable for specification and data-shaping work, but should not be treated as final implementation values until row-level URLs, access dates, and review status are complete.[8] [9]
+
+## 16. Accessibility Subtype Taxonomy
+
+Decisions Log V11 approved splitting **Accessibility improvements** into at least two subtypes. This is not cosmetic; the subtypes have materially different duration, dependency, cost, and sequencing implications.[3]
+
+| Parent Category | Engine Subtype | MVP Treatment | Sequencer Requirement |
+|---|---|---|---|
+| Accessibility improvements | Minor accessibility improvements | MVP | Use subtype-specific duration, lead time, dependency, cost, and trace output |
+| Accessibility improvements | Exterior access modifications | MVP | Use subtype-specific duration, lead time, dependency, cost, and trace output |
+
+The seller-facing UI may display a broader accessibility label where that improves comprehension, but the engine must store the subtype used in timing, sequencing, cost, and explanation logic. Remaining open work is to decide whether DOM impact should inherit from the parent accessibility category or split into subtype-specific DOM-impact rows.[10]
+
+## 17. Dependency Rules
+
+The dependency-rule family remains a build blocker. V11 resolves that the 13 missing duration rows are legitimate sequencer items and that accessibility must be subtype-aware, but it does not replace the need for a full row-level dependency matrix or expert validation.[11]
+
+| Dependency Requirement | V4 Treatment |
+|---|---|
+| Full 30-type dependency matrix | Must be exported into executable `dependency_rules` seed rows |
+| Expert validation | Required from a GC, remodeling PM, or equivalent reviewer before sequencer coding |
+| Dependency type | Must distinguish hard, soft, none, and critical-path dependencies |
+| Staging | Timing warning belongs in anomaly rules; dependency rules should only encode staging-before-photography or post-repair sequencing where supported |
+| Landscaping / curb appeal | Must preserve dependency on disruptive exterior utility, grading, sewer, septic, or site work where present |
+| Fixture replacement | Must preserve dependency on relevant rough plumbing/electrical work and inspection where applicable |
+| Accessibility subtypes | Must not collapse exterior access modifications into minor grab-bar-level work |
+| Model-calibrated ROI influence | Must not alter dependency ordering unless the model artifact is approved and traceable |
+
+## 18. Recommendation Anomaly Rules
+
+Anomaly rules are separate from ordinary ranking and scoring. They attach warnings or trace labels when an otherwise useful recommendation is constrained by timing, source quality, missing data, dependency uncertainty, model-approval status, or operational feasibility.[12]
+
+The first approved MVP anomaly is professional staging under 21 days. The rule must fire when professional staging is recommended and the seller’s target list date is fewer than 21 calendar days away. This warning should not automatically suppress staging; it should mark the recommendation as a timeline risk and may influence urgency, constrained status, or beyond-timeline categorization depending on the rest of the scheduling calculation.[3] [12]
+
+| Field | Requirement |
+|---|---|
+| `rule_id` | `ANOM-STAGING-UNDER-21-DAYS` |
+| `repair_type` | Professional staging |
+| `trigger_type` | `target_date_less_than_lead_time_high` or equivalent |
+| `trigger_threshold_days` | `21` |
+| `severity` | Timeline risk / scheduling risk |
+| `message_template` | Draft copy pending UX/legal review |
+| `decision_reference` | D-V11-002 |
+| `version` | Anomaly rule version |
+
+> **Draft staging warning copy:** Professional staging often requires advance scheduling. Because your target list date is less than 21 days away, staging may still be worthwhile, but availability could limit whether it can be completed before listing. Consider calling stagers immediately or using a faster partial-staging/photo-prep alternative.[12]
+
+Model-artifact refusal should normally be handled as an engine guardrail rather than a seller-facing anomaly. If the seller-facing experience is affected because model-calibrated estimates are unavailable, the report should use confidence-qualified fallback language rather than exposing internal registry status.
+
+## 19. Recommendation Output and Explanation Requirements
+
+The output must explain why actions are recommended, ordered, delayed, warned, or omitted. A seller should be able to understand the rationale without needing to understand model internals.
+
+| Output Element | Requirement |
+|---|---|
+| Priority rank | Show relative priority and category, not just raw score |
+| Reason statement | Explain expected benefit, risk, and timing logic |
+| Cost/value label | Show ranges or confidence-qualified estimates where exact values are unsupported |
+| Timeline status | Identify urgent, feasible, constrained, beyond timeline, or not recommended |
+| Dependency explanation | Show predecessor work where dependencies affect order |
+| Anomaly callout | Show approved warnings such as staging under 21 days |
+| Confidence label | Distinguish empirical, static assumption, owner-approved, expert-validated, placeholder, or approved-model basis |
+| Model-use trace | Persist model ID and version internally if approved model calibration is used |
+| Traceability | Persist internal trace IDs even if hidden from seller-facing report |
+
+Seller-facing copy must not imply that diagnostic regression coefficients are valid value-uplift estimates. If the model path is not approved, the output must either rely on approved static assumptions or explain that some estimates are unavailable or confidence-limited.
+
+## 20. Caching and Refresh Strategy
+
+The system should minimize unnecessary external calls and preserve reproducibility of analysis runs. Runtime data should be cached with source timestamp and freshness metadata. Static datasets, seed tables, regression fixtures, and model artifacts should be versioned and refreshed through governed processes rather than ad hoc replacement.
+
+| Data Type | Refresh / Cache Treatment |
+|---|---|
+| Property profile API results | Cache by property/source with retrieval timestamp and source version where available |
+| ATTOM comparable-sales exports | Preserve source dataset path, export timestamp, mapping version, and date-window coverage |
+| Regression fixtures | Treat known-good fixtures as immutable validation inputs unless explicitly superseded |
+| Market datasets | Refresh on planned cadence defined in source register |
+| Redfin or market pull data | Weekly ingestion if adopted; scheduler provider deferred |
+| Seed tables | Versioned releases; no silent overwrite of production seed data |
+| Model-registry artifacts | Versioned artifacts; no silent overwrite; promotion status changes require decision trace |
+| Generated reports | Store immutable report snapshot linked to analysis run, seed versions, and model versions where applicable |
+| Source workpapers | Preserve as evidence artifacts; update through source-register versioning |
+
+Decisions Log V12 rejects immediate full 12-metro repulls for now. Additional ATTOM usage should wait until Greenville diagnostics clarify whether weak performance is caused by missing features, noisy geography, insufficient row count, target choice, or other data-quality issues.[4] [7]
+
+## 21. Security, Privacy, and Access Control
+
+The system must protect seller information, property data, API credentials, generated reports, model artifacts, diagnostics, and source workpapers. Secrets must remain server-side. Reports and uploaded files must not be public by default.
+
+| Security Area | Requirement |
+|---|---|
+| Secrets | Store server-side; use managed vault for production where feasible |
+| API keys | Never expose in frontend; route calls through backend adapters |
+| Object storage | Private by default with backend-generated short-lived signed access URLs |
+| Authentication | Required if persistent user accounts, saved reports, or private files are included |
+| Authorization | Users may access only their own properties, analyses, and reports unless sharing is explicitly implemented |
+| Model artifacts | Restrict write access; approval flags must not be user-editable through public flows |
+| Audit logging | Record significant recommendation runs, source versions, seed versions, model versions, approval states, and report generation events |
+| Data minimization | Do not collect unnecessary personally identifiable or sensitive seller data |
+
+## 22. Legal, Compliance, and Claims Controls
+
+The product must not present outputs as appraisals, legal advice, tax advice, contractor guarantees, or guaranteed resale outcomes. The recommendation engine should use careful language around estimated value, likely buyer perception, timeline risk, source confidence, and model maturity.
+
+| Legal Risk | Control |
+|---|---|
+| Appraisal-like claims | Use estimate/confidence language and disclaimers; avoid guaranteed value language |
+| Diagnostic model misuse | Prohibit diagnostic coefficients in seller-facing recommendations and trace all approved model use |
+| Contractor timeline certainty | Present duration/lead-time ranges and scheduling risk labels |
+| Repair safety or code compliance | Recommend professional review where safety, permitting, electrical, plumbing, structural, or access modifications are involved |
+| Fair housing / demographic misuse | Avoid protected-class targeting or discriminatory recommendation logic |
+| Multi-state release risk | Conduct legal review before national public release |
+| Source licensing | Confirm rights and terms for any downloaded or API-derived data before production use |
+
+## 23. Testing Strategy
+
+Testing must validate correctness, traceability, source governance, model-artifact governance, and user-facing explanation quality. Engine tests should be deterministic and should verify that seed-table version changes and model-version changes produce expected trace changes.
+
+| Test Category | Required Coverage |
+|---|---|
+| Unit tests | Scoring components, timeline feasibility, anomaly triggers, dependency resolution, confidence labels |
+| Seed-table validation | Required fields, nullability rules, review-status vocabulary, source references, version consistency |
+| ATTOM mapping tests | Validate approved `sale_date` fallback order and reject reliance on defective path |
+| Regression/calibration tests | Missingness, sign, magnitude, coefficient bounds, data leakage, sensitivity |
+| Model-registry validation tests | Required fields, training-window fields, metrics presence, coefficient/feature-name matching, local path existence, diagnostic-only approval-flag rule |
+| Promotion-readiness tests | Ensure structurally valid models are not automatically approved and promotion criteria are reported separately |
+| Recommendation-engine refusal tests | Verify diagnostic, candidate, retired, rejected, structurally invalid, and `approved_for_recommendations: false` artifacts are refused |
+| Integration tests | External adapters, source-status logging, cache behavior, graceful degradation |
+| End-to-end tests | Full seller workflow from intake through report generation |
+| Report-output review | Explanation clarity, warning visibility, disclaimer presence, anomaly copy, confidence language |
+| Security tests | Authorization, object access, secret exposure, signed URL expiry, model-artifact write controls |
+| Governance tests | Analysis trace includes seed versions, source IDs, coefficient/model IDs, approval flags, and decision references where applicable |
+
+The owner-reported model-registry validator passed 11 of 11 checks against the Greenville v0.1 artifact. This validates the artifact contract but does not approve the model. Future automated tests must preserve that distinction.[6]
+
+## 24. Observability and Auditability
+
+The system should record enough metadata to reproduce recommendation outputs and diagnose model, seed, or source issues. This is especially important because MVP recommendations may rely partly on static assumptions and because current regression artifacts remain diagnostic-only.
+
+| Audit Item | Required Trace |
+|---|---|
+| Analysis run | Input snapshot, timestamp, user/property ID, engine version |
+| Recommendation | Candidate ID, final rank, score components, category, explanation |
+| Timing | Duration/lead-time rule ID, version, source status |
+| Dependency | Dependency-rule IDs and critical-path flags applied |
+| Anomaly | Anomaly IDs triggered and message templates used |
+| Source | Source-register IDs, access dates, confidence labels |
+| ATTOM comparable export | Mapping version, source dataset path, export timestamp, sale-date coverage |
+| Model artifact | Model ID, version, market, target, status, approval flag, validation report path |
+| Coefficients | Coefficient-set version, calibration status, placeholder/empirical/model flag |
+| Report | Generated report version and output timestamp |
+
+## 25. Readiness Gates
+
+The following gates determine whether the project is ready for implementation in the affected subsystem. V4 should be treated as a specification milestone, not as automatic authorization to code the sequencer or wire diagnostic coefficients into seller-facing recommendations.
+
+| Gate ID | Gate | Current Status | Required Before Coding / Release |
+|---|---|---|---|
+| RG-ARCH-001 | Provider-neutral architecture reflected in specification | Closed by V3; preserved by V4 | Confirm deployment provider before implementation planning |
+| RG-DATA-001 | Static Data Source Register V2 fully updated | Partially open | Merge V2 addendum into full register and complete source metadata |
+| RG-API-001 | ATTOM enriched endpoint audit completed | Partially closed for sale-date path only | Verify richer fields before enriched regression or recommendation use |
+| RG-REG-001 | Regression calibration field coverage defined | Partially closed / narrowed | Greenville field coverage and smoke path defined; production calibration remains open |
+| RG-REG-002 | Corrected Greenville sale-date fixture supports local smoke-test modeling | Closed for Greenville smoke test | Retain fixture and coverage evidence |
+| RG-REG-003 | Versioned model-registry artifact pattern and validator exist | Closed structurally for Greenville v0.1 | Preserve validator and artifact contract; still not product approval |
+| RG-REG-004 | Model promotion-readiness criteria and diagnostics completed | Open | Complete diagnostics, thresholds, residual review, coefficient sanity review, and manual approval process |
+| RG-SEQ-001 | Duration/lead-time coverage for all DOM-impact repair types | Conditionally open | Complete row-level URLs/access dates and final review status |
+| RG-SEQ-002 | Accessibility subtype taxonomy | Direction approved | Align catalog, DOM impact, cost, duration, dependency, and report wording |
+| RG-SEQ-003 | Professional staging anomaly | Direction approved | Add to seed table and finalize copy after UX/legal review |
+| RG-SEQ-004 | Dependency matrix row-level export | Open | Export full 30-type matrix into `dependency_rules` |
+| RG-SEQ-005 | Expert validation of dependency rules | Open | Obtain GC/remodeling PM or equivalent validation |
+| RG-LEGAL-001 | Legal review for public claims/disclaimers | Open | Complete before public release |
+| RG-SEC-001 | Security and access-control review | Open | Complete before handling real user/private report data |
+
+These gate updates should be read narrowly. V12 does not approve the Greenville v0.1 coefficients for recommendations. It means the project now has a working path from corrected local data to diagnostic coefficients and structurally validated model artifacts.[4]
+
+## 26. Remaining Blockers and Open Questions
+
+The following blockers remain after this V4 consolidation. They should be tracked in the Open Questions Log and closed through future decisions, source-register updates, seed-table approvals, diagnostics, or model-promotion reviews.
+
+| Blocker ID | Blocker | Owner / Reviewer | Required Before |
+|---|---|---|---|
+| B-SEQ-001 | Row-level source URLs, access dates, and citation QA for duration/lead-time rows | Product owner / data reviewer | Final seed-table approval |
+| B-SEQ-002 | Lead-time values for accessibility subtype rows remain TBD | Product owner / data reviewer | Sequencer implementation |
+| B-SEQ-003 | Full 30-type dependency matrix must be exported into executable seed rows | Product / technical architect | Sequencer coding |
+| B-SEQ-004 | Dependency rules require GC/remodeling PM or equivalent expert validation | Construction expert reviewer | Sequencer coding |
+| B-SEQ-005 | Accessibility subtypes must align across recommendation catalog, DOM impact, cost, duration, dependency, and copy | Product architect | Recommendation engine implementation |
+| B-ANOM-001 | Final staging anomaly copy requires UX/legal review | UX/legal reviewer | Public report output |
+| B-DATA-001 | Static Data Source Register V2 must be completed as a full artifact | Product/data owner | Implementation readiness |
+| B-REG-001 | Production regression calibration remains open despite Greenville smoke-test pass | Data/modeling owner | Seller-facing model use |
+| B-REG-002 | Promotion thresholds for R², MAE, RMSE, cross-validation, and residual bias are not finalized | Product + modeling reviewer | Model approval |
+| B-REG-003 | Residual diagnostics by ZIP, price band, size band, time period, and other segments are not complete | Data/modeling owner | Promotion-readiness review |
+| B-REG-004 | Target choice, including `log(price_per_sqft)` versus `log(sale_amount)`, remains undecided | Data/modeling owner | Model approval |
+| B-REG-005 | Condition, renovation-quality, finish-level, micro-location, school-zone, and presentation-quality feature sourcing remains open | Product + data owner | Improved calibration |
+| B-REG-006 | Authority to set `approved_for_recommendations` to true is not finalized | Product owner | Model promotion |
+| B-REG-007 | File-only registry versus database-backed model registry remains future architecture | Technical architect | Production hardening |
+| B-LEGAL-001 | Public-release legal review remains open | Legal reviewer | Public release |
+
+## 27. MVP / Phase 2 / Phase 3 / Reject Classification
+
+V4 keeps the project focused on the smallest valuable product that can answer the seller’s core question.
+
+| Capability | Classification | Rationale |
+|---|---|---|
+| Guided seller/property intake | MVP | Required to produce seller-specific plan |
+| Recommendation catalog with parent-child subtype support | MVP | Required by accessibility split and traceability |
+| Duration/lead-time rules | MVP | Required for sequencing and timeline feasibility |
+| Full dependency rules | MVP | Required to answer “in what order” |
+| Professional staging anomaly | MVP | Approved by V11 and directly supports timeline guidance |
+| Source registry and seed versioning | MVP | Required for defensibility and maintenance |
+| ATTOM corrected `sale_date` mapping | MVP | Required for valid comparable-sales regression fixtures |
+| Greenville corrected smoke-test fixture | MVP / diagnostic | Required for local pipeline validation and low-cost diagnostics |
+| Model registry artifact pattern | MVP architecture | Required to keep coefficients out of code and diagnostics-only outputs |
+| Model-registry validation | MVP governance | Required before any artifact can even be considered structurally safe |
+| Promotion-readiness diagnostics | MVP | Required before any coefficient artifact can be approved |
+| Recommendation-engine refusal of unapproved artifacts | MVP | Required to protect seller-facing flows from diagnostic coefficients |
+| Regression calibration with observed fields only | MVP / readiness-dependent | Required for credible ROI logic, but constrained by data availability and promotion gates |
+| Full 12-metro repull | Defer within MVP | Rejected for now until Greenville diagnostics justify broader API usage |
+| Live contractor scheduling | Phase 2 or Phase 3 | High complexity and maintenance burden |
+| Database-backed model registry | Phase 2 / Phase 3 | Useful for production hardening but not required for diagnostic workflow |
+| Automated permit/code determination | Phase 3 | High legal and jurisdictional complexity |
+| Exact resale-value guarantee | Reject | Unsupported and legally risky |
+| Generic fallback timing for sequencer-required rows | Reject for MVP sequencer | V11 explicitly requires explicit coverage |
+| Seller-facing use of Greenville v0.1 diagnostic coefficients | Reject | V12 explicitly does not approve the coefficients |
+| Automatic model approval | Reject | V12 requires validation plus future promotion-readiness and manual approval |
+
+## 28. Implementation Sequence Recommendation
+
+The next step after V4 should not be broad code generation or seller-facing coefficient wiring. The project should close the data, governance, diagnostic, and sequencer gates that control the recommendation engine.
+
+| Sequence | Artifact / Workstream | Outcome |
+|---:|---|---|
+| 1 | Confirm Technical Specification V4 as the governing technical spec | Shared implementation-control baseline |
+| 2 | Preserve corrected ATTOM `sale_date` mapper requirements in API/data-adapter specification | Future pulls retain valid sale-date data |
+| 3 | Keep Greenville v0.1 as `diagnostic_only` and `approved_for_recommendations: false` | Safe model-governance posture |
+| 4 | Run Greenville diagnostics and promotion-readiness reporting | Evidence for missing features, target choice, residual bias, and expansion decision |
+| 5 | Define model-promotion thresholds and manual approval authority | Prevent accidental or subjective promotion |
+| 6 | Add recommendation-engine refusal tests for unapproved model artifacts | Ensures safe failure behavior before integration |
+| 7 | Static Data Source Register V2 full update | Authoritative source inventory and provenance model |
+| 8 | Duration/lead-time row-level source QA | Final executable timing seed table |
+| 9 | Recommendation catalog taxonomy alignment | Consistent repair/subtype IDs across artifacts |
+| 10 | Full dependency matrix export | Executable dependency seed rows |
+| 11 | Dependency expert validation | Sequencer implementation readiness |
+| 12 | Recommendation Engine Specification | Precise scoring, ranking, sequencing, anomaly, model-use, and explanation logic |
+| 13 | Testing Plan | Acceptance criteria and regression suite before coding |
+| 14 | Implementation planning | Code only after the affected specification gates are closed |
+
+## 29. Explicit Non-Approvals
+
+V4 intentionally does not approve several tempting next steps. These non-approvals are important because they prevent the project from drifting from defensible product architecture into premature model integration.
+
+| Item | V4 Status |
+|---|---|
+| Approval of Greenville v0.1 coefficients for seller-facing recommendations | Not approved |
+| Final threshold for acceptable R², MAE, RMSE, or residual bias | Not finalized |
+| Ridge regression as final model class | Not decided |
+| `log(price_per_sqft)` as final target | Not decided |
+| Immediate full 12-metro repull | Rejected for now, not permanently rejected |
+| Database-only model registry | Not required yet; future architecture option |
+| ATTOM condition, quality, renovation, or enriched fields availability | Still open |
+| Sequencer implementation | Still blocked by source QA, dependency export, and expert validation |
+| Public-release claims language | Still requires legal/UX review |
+
+## 30. References
+
+[1]: ./Property_ROI_Analysis_Tool_PRD_v0_8.txt "Property ROI Analysis Tool — Product Requirements Document v0.8; exported from Google Drive folder ROI Tool; source Google Doc: https://docs.google.com/document/d/11gWsezKk73kfAepKbEus7Xcf2KBU_p_dCrEM-82wQ0Q/edit"  
+[2]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V10.doc "Property ROI Analysis Tool — Decisions Log V10"  
+[3]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V11.md "Property ROI Analysis Tool — Decisions Log V11"  
+[4]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Decisions%20Log%20V12.md "Property ROI Analysis Tool — Decisions Log V12"  
+[5]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Regression%20Model%20Registry%20and%20Promotion%20Governance%20v1.0.md "Property ROI Analysis Tool — Regression Model Registry and Promotion Governance v1.0"  
+[6]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Cursor%20Regression%20Implementation%20Capture.md "Property ROI Analysis Tool — Cursor Regression Implementation Capture"  
+[7]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Greenville%20Smoke%20Regression%20Result%20Assessment.md "Property ROI Analysis Tool — Greenville Smoke Regression Result Assessment"  
+[8]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Static%20Data%20Source%20Register%20and%20Download%20Checklist%20V2%20Addendum.md "Property ROI Analysis Tool — Static Data Source Register and Download Checklist V2 Addendum"  
+[9]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Duration%20Lead-Time%20Seed%20Table%20v1.0.md "Property ROI Analysis Tool — Duration/Lead-Time Seed Table v1.0"  
+[10]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Open%20Questions%20Log%20V1.md "Property ROI Analysis Tool — Open Questions Log V1"  
+[11]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Dependency%20Rules%20v1.0%20Addendum.md "Property ROI Analysis Tool — Dependency Rules v1.0 Addendum"  
+[12]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Recommendation%20Anomaly%20Rules%20v1.0.md "Property ROI Analysis Tool — Recommendation Anomaly Rules v1.0"  
+[13]: ./Property%20ROI%20Analysis%20Tool%20%E2%80%94%20Technical%20Specification%20V3%20Sequencer%20Update.md "Property ROI Analysis Tool — Technical Specification V3 Sequencer Update"  

@@ -10,8 +10,8 @@
   font-size: var(--text-xs);
   line-height: 1.3;
   color: var(--ink);
-  background: var(--paper-raised);
-  border: 1px solid var(--ink-10);
+  background: var(--paper-overlay);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius-sm);
   padding: 2px var(--sp-2);
   white-space: normal;
@@ -28,7 +28,7 @@
 
 .chip--answer .dot { background: var(--field-deep); }
 .chip--records .dot { background: var(--ink); }
-.chip--estimate .dot { background: var(--ink-muted); }
+.chip--estimate .dot { background: var(--cyan); }
 .chip--assumed .dot { background: var(--caution); }
 .chip--draft .dot { background: var(--caution); }
 
@@ -109,8 +109,8 @@
 .chip-legend--compact {
   margin: 0 0 var(--sp-8);
   padding: var(--sp-4);
-  background: var(--field-tint);
-  border: 1px solid rgba(63, 95, 115, 0.12);
+  background: var(--cyan-tint);
+  border: 1px solid var(--line-diagram);
   border-radius: var(--radius);
 }
 
@@ -197,11 +197,12 @@
 /* ---------- cards ---------- */
 
 .card {
-  background: var(--paper-raised);
-  border: 1px solid var(--stone);
+  background: var(--paper-overlay);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius);
   padding: var(--sp-4);
   box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(4px);
 }
 
 @media (min-width: 700px) {
@@ -211,7 +212,7 @@
 }
 
 .card--urgent {
-  border-left: 4px solid var(--urgent);
+  border-left: 2px solid var(--urgent);
 }
 
 .card--dns {

@@ -1,42 +1,76 @@
 {% extends "base.html" %}
-{% from "partials/_intake_visuals.html" import plan_preview %}
+{% from "partials/_intake_visuals.html" import hero_asset_stack, band_asset_composition %}
 {% block title %}Plan what to fix before you list{% endblock %}
-{% block body_class %} class="page-intake page-address"{% endblock %}
+{% block body_class %} class="page-landing"{% endblock %}
 
 {% block content %}
-<div class="intake-page address-page fade-slide">
-  <div class="intake-layout intake-layout--split">
-    <div class="intake-main">
-      <header class="intake-intro intake-intro--center">
-        <h1>Plan what to fix before you list.</h1>
-        <p class="intake-lede">Four questions. A clear plan in about two minutes. No account needed.</p>
-      </header>
+<div class="landing fade-slide">
+  <section class="landing-hero" id="hero">
+    <div class="landing-hero__bg" aria-hidden="true">
+      <div class="landing-hero__bg-texture"></div>
+      <div class="landing-hero__bg-grid"></div>
+    </div>
+    <div class="landing-container landing-hero__grid">
+      <div class="landing-hero__copy">
+        <p class="landing-eyebrow">National seller decision support</p>
+        <h1 class="landing-headline">Plan what to fix before you list — and what to <em>skip</em>.</h1>
+        <p class="landing-lede">Enter your address. Answer four short questions. Get a prioritized Seller Action Plan with sourced cost ranges and clear reasons — not a generic renovation checklist.</p>
 
-      <div class="intake-panel">
-        {% if error %}
-        <div class="field-error" role="alert">{{ error }}</div>
-        {% endif %}
+        <div class="landing-form-card" id="hero-form">
+          {% if error %}
+          <div class="field-error" role="alert">{{ error }}</div>
+          {% endif %}
 
-        <form class="address-form" method="post" action="/intake/address" data-address-form>
-          <label class="form-label" for="address">Property address</label>
-          <p class="form-helper" id="address-helper">Start with your street number and city — we'll match public records after you confirm.</p>
-          <div class="suggest-wrap" data-suggest>
-            <input type="text" id="address" name="address" value="{{ address_value }}"
-                   placeholder="123 Maple St, Springfield, IL 62704" autocomplete="off"
-                   aria-describedby="address-helper suggest-status"
-                   role="combobox" aria-expanded="false" aria-controls="address-suggestions"
-                   aria-autocomplete="list" autofocus required>
-            <ul class="suggest-list" id="address-suggestions" role="listbox"
-                aria-label="Address suggestions" hidden></ul>
-          </div>
-          <p class="form-helper form-helper--status" id="suggest-status" data-suggest-status aria-live="polite"></p>
-          <button type="submit" class="btn btn--full btn--primary">Find my property</button>
-        </form>
+          <form class="landing-form" method="post" action="/intake/address" data-address-form>
+            <label class="form-label landing-form__label" for="address">Property address</label>
+            <div class="landing-form__row">
+              <div class="suggest-wrap landing-form__input" data-suggest>
+                <input type="text" id="address" name="address" value="{{ address_value }}"
+                       placeholder="123 Maple St, Springfield, IL 62704" autocomplete="off"
+                       aria-describedby="address-helper suggest-status"
+                       role="combobox" aria-expanded="false" aria-controls="address-suggestions"
+                       aria-autocomplete="list" autofocus required>
+                <ul class="suggest-list" id="address-suggestions" role="listbox"
+                    aria-label="Address suggestions" hidden></ul>
+              </div>
+              <button type="submit" class="btn btn--primary landing-form__submit">Find my property</button>
+            </div>
+            <p class="form-helper" id="address-helper">Include street, city, and state — we'll standardize the address before looking up public records.</p>
+            <p class="form-helper form-helper--status" id="suggest-status" data-suggest-status aria-live="polite"></p>
+          </form>
 
-        <p class="trust-line">We only use your address to look up public property records — never sold or shared.</p>
+          <p class="landing-trust">We only use your address for public property records. No account required.</p>
+        </div>
+
+        <p class="landing-meta">Free · No signup · About two minutes</p>
       </div>
 
-      <ul class="value-row" aria-label="What you get">
+      <aside class="landing-hero__preview" aria-hidden="true">
+        {{ hero_asset_stack() }}
+      </aside>
+    </div>
+  </section>
+
+  <section class="landing-band" id="sample-output" aria-labelledby="sample-heading">
+    <div class="landing-container landing-band__grid">
+      <div class="landing-band__copy">
+        <h2 id="sample-heading" class="landing-section-title">What you'll receive</h2>
+        <p class="landing-band__text">A timeline-ordered fix list with cost bands, source labels on every number, and explicit <strong>Do Not Spend</strong> callouts when something isn't worth starting before you list.</p>
+        <ul class="landing-checklist">
+          <li>Prioritized actions matched to your listing timeline</li>
+          <li>County property records where available</li>
+          <li>Every estimate labeled — your answers, records, or standard ranges</li>
+        </ul>
+      </div>
+      <aside class="landing-band__visual" aria-hidden="true">
+        {{ band_asset_composition() }}
+      </aside>
+    </div>
+  </section>
+
+  <section class="landing-value" aria-label="What you get">
+    <div class="landing-container">
+      <ul class="value-row value-row--landing">
         <li class="value-item">
           <span class="value-item__label">Prioritized fixes</span>
           <span class="value-item__desc">What to tackle first, and what to skip</span>
@@ -47,15 +81,36 @@
         </li>
         <li class="value-item">
           <span class="value-item__label">Sourced estimates</span>
-          <span class="value-item__desc">Every number labeled with its source</span>
+          <span class="value-item__desc">National cost ranges — not contractor quotes</span>
         </li>
       </ul>
     </div>
+  </section>
 
-    <aside class="intake-visual">
-      {{ plan_preview() }}
-    </aside>
-  </div>
+  <section class="landing-steps" id="how-it-works" aria-labelledby="steps-heading">
+    <img src="/static/assets/blueprint-square-motif.png" alt=""
+         class="landing-steps__motif" width="160" height="160" loading="lazy" decoding="async">
+    <div class="landing-container">
+      <h2 id="steps-heading" class="landing-section-title landing-section-title--center">How it works</h2>
+      <ol class="steps-grid">
+        <li class="steps-grid__item">
+          <span class="steps-grid__num">1</span>
+          <span class="steps-grid__title">Enter your address</span>
+          <span class="steps-grid__desc">We standardize it and pull public property records where available.</span>
+        </li>
+        <li class="steps-grid__item">
+          <span class="steps-grid__num">2</span>
+          <span class="steps-grid__title">Answer four questions</span>
+          <span class="steps-grid__desc">Your goal, timeline, spend comfort, and any known problems — skip what you don't know yet.</span>
+        </li>
+        <li class="steps-grid__item">
+          <span class="steps-grid__num">3</span>
+          <span class="steps-grid__title">Get your Seller Action Plan</span>
+          <span class="steps-grid__desc">A prioritized list with cost bands, sources, and what not to spend on before you list.</span>
+        </li>
+      </ol>
+    </div>
+  </section>
 </div>
 {% endblock %}
 

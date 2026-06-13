@@ -1,20 +1,115 @@
-/* Product-specific decorative imagery — CSS/SVG only, no photography. */
+/* Product-specific decorative imagery — architectural linework, CSS/SVG only. */
+
+/* ---------- blueprint surfaces ---------- */
 
 .blueprint-bg {
+  position: relative;
   background-color: var(--paper-raised);
   background-image:
-    linear-gradient(rgba(63, 95, 115, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(63, 95, 115, 0.045) 1px, transparent 1px);
-  background-size: 20px 20px;
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size:
+    8px 8px,
+    8px 8px,
+    40px 40px,
+    40px 40px;
+}
+
+.blueprint-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, transparent 49.5%, var(--line-diagram) 49.5%, var(--line-diagram) 50%, transparent 50.5%),
+    linear-gradient(-135deg, transparent 49.5%, var(--line-diagram) 49.5%, var(--line-diagram) 50%, transparent 50.5%);
+  background-size: 120px 120px;
+  opacity: 0.35;
+}
+
+.blueprint-bg > .visual-panel__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- hero / page diagram motifs ---------- */
+
+.arch-motif {
+  position: absolute;
+  pointer-events: none;
+  color: var(--cyan);
+  opacity: 0.55;
+}
+
+.arch-motif--hero {
+  width: min(42vw, 520px);
+  height: auto;
+  top: 8%;
+  right: -4%;
+}
+
+.arch-motif--corner {
+  width: 180px;
+  height: 180px;
+  bottom: 12%;
+  left: 4%;
+  opacity: 0.35;
+}
+
+.landing-hero__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.landing-hero__bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent 85%);
+  opacity: 0.7;
+}
+
+.landing-hero__bg::after {
+  content: '';
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: 1px;
+  height: 55%;
+  background: linear-gradient(to bottom, transparent, var(--line-diagram), transparent);
+  transform: translateX(-50%);
+  opacity: 0.6;
 }
 
 /* ---------- visual panel shell ---------- */
 
 .visual-panel {
-  border: 1px solid var(--stone);
+  position: relative;
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-panel);
   overflow: hidden;
+  background: var(--paper-overlay);
+  backdrop-filter: blur(6px);
+}
+
+.visual-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--field) 0%, var(--cyan) 55%, var(--horizon) 100%);
+  opacity: 0.85;
 }
 
 .visual-panel__inner {
@@ -29,10 +124,57 @@
   border: none;
   box-shadow: none;
   background: transparent;
+  backdrop-filter: none;
+}
+
+.visual-panel--nested::after {
+  display: none;
 }
 
 .visual-panel--nested .visual-panel__inner {
   padding: var(--sp-4) 0 0;
+}
+
+.visual-panel--hero {
+  transform: rotate(-1.5deg);
+  box-shadow: var(--shadow-layer);
+}
+
+.visual-panel--hero::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--cyan-line);
+  border-radius: calc(var(--radius-lg) - 2px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.visual-panel--stacked {
+  background: rgba(255, 252, 248, 0.94);
+  box-shadow: var(--shadow-layer);
+}
+
+.visual-panel--stacked::after {
+  opacity: 1;
+}
+
+.visual-panel--promo {
+  max-width: 22rem;
+}
+
+.visual-panel--promo .visual-heading {
+  font-size: var(--text-md);
+}
+
+.visual-panel--promo .visual-panel__inner {
+  padding: var(--sp-5);
+}
+
+@media (min-width: 900px) {
+  .visual-panel--promo {
+    max-width: none;
+  }
 }
 
 .visual-panel--building .preview-card {
@@ -56,9 +198,9 @@
 .visual-eyebrow {
   font-family: var(--font-utility);
   font-size: var(--text-xs);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--field);
+  color: var(--cyan-deep);
   margin: 0 0 var(--sp-2);
 }
 
@@ -69,6 +211,7 @@
   color: var(--ink);
   margin: 0 0 var(--sp-4);
   line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .visual-caption {
@@ -99,6 +242,10 @@
   color: var(--field-deep);
 }
 
+.icon-line--cyan {
+  color: var(--cyan);
+}
+
 .icon-line--gold {
   color: var(--horizon);
 }
@@ -116,7 +263,7 @@
   gap: var(--sp-2);
   margin-bottom: var(--sp-5);
   padding-bottom: var(--sp-4);
-  border-bottom: 1px solid var(--ink-06);
+  border-bottom: 1px solid var(--line-hairline);
 }
 
 .preview-context__text {
@@ -148,8 +295,8 @@
   font-size: 10px;
   line-height: 1.2;
   color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--ink-10);
+  background: var(--paper-overlay);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius-sm);
   padding: 2px 6px;
 }
@@ -163,7 +310,7 @@
 
 .preview-chip--records .preview-chip__dot { background: var(--ink); }
 .preview-chip--answer .preview-chip__dot { background: var(--field-deep); }
-.preview-chip--estimate .preview-chip__dot { background: var(--ink-muted); }
+.preview-chip--estimate .preview-chip__dot { background: var(--cyan); }
 .preview-chip--assumed .preview-chip__dot { background: var(--caution); }
 
 /* ---------- timeline horizon (preview) ---------- */
@@ -179,9 +326,9 @@
   left: 7px;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: var(--horizon);
-  opacity: 0.4;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--horizon), var(--cyan-line));
+  opacity: 0.7;
 }
 
 .preview-horizon__marker {
@@ -198,13 +345,13 @@
 .preview-horizon__marker::before {
   content: '';
   position: absolute;
-  left: calc(-1 * var(--sp-6) + 2px);
+  left: calc(-1 * var(--sp-6) + 3px);
   top: 50%;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--horizon);
-  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--horizon);
+  background: var(--paper-raised);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 /* ---------- mini action cards ---------- */
@@ -213,24 +360,25 @@
   position: relative;
   display: flex;
   gap: var(--sp-3);
-  background: var(--paper);
-  border: 1px solid var(--stone);
+  background: var(--paper-overlay);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius);
   padding: var(--sp-3);
   margin-bottom: var(--sp-3);
+  box-shadow: var(--shadow-soft);
 }
 
 .preview-card--urgent {
-  border-left: 3px solid var(--urgent);
+  border-left: 2px solid var(--urgent);
 }
 
 .preview-card__seq {
   flex: none;
   width: 18px;
   height: 18px;
-  border-radius: 50%;
-  border: 2px solid var(--horizon);
-  color: var(--horizon);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--cyan);
+  color: var(--cyan-deep);
   font-family: var(--font-utility);
   font-size: 10px;
   display: flex;
@@ -264,8 +412,8 @@
 /* ---------- do not spend callout ---------- */
 
 .preview-dns {
-  background: var(--ink-06);
-  border: 1px dashed var(--ink-10);
+  background: var(--horizon-tint);
+  border: 1px dashed var(--line-diagram);
   border-radius: var(--radius);
   padding: var(--sp-3);
   margin-top: var(--sp-2);
@@ -275,9 +423,9 @@
   display: block;
   font-family: var(--font-utility);
   font-size: 10px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: var(--field-deep);
   margin-bottom: var(--sp-1);
 }
 
@@ -289,7 +437,7 @@
   color: var(--ink-muted);
   text-decoration: line-through;
   text-decoration-color: var(--urgent);
-  text-decoration-thickness: 1.5px;
+  text-decoration-thickness: 1px;
 }
 
 .preview-dns__reason {
@@ -322,9 +470,9 @@
   flex: none;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
-  border: 1px solid var(--stone);
-  background: var(--paper);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-structure);
+  background: var(--paper-raised);
   font-family: var(--font-utility);
   font-size: 11px;
   display: flex;
@@ -349,9 +497,9 @@
 }
 
 .step-rail__item.is-done .step-rail__dot {
-  background: var(--field-tint);
-  border-color: var(--field);
-  color: var(--field-deep);
+  background: var(--cyan-tint);
+  border-color: var(--cyan);
+  color: var(--cyan-deep);
 }
 
 /* ---------- checklist motif ---------- */
@@ -361,7 +509,7 @@
   flex-direction: column;
   gap: var(--sp-2);
   padding-top: var(--sp-4);
-  border-top: 1px solid var(--ink-06);
+  border-top: 1px solid var(--line-hairline);
 }
 
 .motif-checklist__row {
@@ -388,13 +536,13 @@
   gap: var(--sp-1);
   padding: var(--sp-3);
   border-radius: var(--radius);
-  border: 1px solid var(--ink-06);
-  background: var(--paper);
+  border: 1px solid var(--line-hairline);
+  background: var(--paper-overlay);
 }
 
 .motif-split__col--fix {
-  border-color: rgba(63, 95, 115, 0.2);
-  background: var(--field-tint);
+  border-color: var(--line-diagram);
+  background: var(--cyan-tint);
 }
 
 .motif-split__label {
@@ -426,8 +574,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--field-tint);
-  border: 1px solid rgba(63, 95, 115, 0.15);
+  background: var(--cyan-tint);
+  border: 1px solid var(--line-diagram);
   border-radius: var(--radius);
 }
 
@@ -440,16 +588,16 @@
 
 .motif-record__line {
   display: block;
-  height: 8px;
-  border-radius: 4px;
-  background: var(--ink-06);
+  height: 6px;
+  border-radius: 1px;
+  background: var(--line-hairline);
   width: 70%;
 }
 
 .motif-record__line--wide {
   width: 90%;
-  background: var(--field-tint);
-  border: 1px solid rgba(63, 95, 115, 0.12);
+  background: var(--cyan-tint);
+  border: 1px solid var(--line-diagram);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -457,5 +605,9 @@
   .visual-panel--building .preview-dns {
     animation: none;
     opacity: 1;
+  }
+
+  .visual-panel--hero {
+    transform: none;
   }
 }

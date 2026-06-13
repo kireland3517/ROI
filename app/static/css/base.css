@@ -15,8 +15,35 @@ body {
   font-family: var(--font-body);
   font-size: var(--text-md);
   line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
+main {
+  padding: var(--sp-6) var(--sp-4) var(--sp-12);
+  flex: 1;
+}
+
+body.page-landing main {
+  padding: 0;
+  display: block;
+  min-height: auto;
+}
+
+.page-intake main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 4.5rem);
+  padding-top: var(--sp-6);
+  padding-bottom: var(--sp-8);
+}
+
+.page-report main {
+  display: block;
+  padding-top: var(--sp-8);
+}
 h1,
 h2,
 h3 {
@@ -43,34 +70,226 @@ a {
   color: var(--field);
 }
 
-.topbar {
+/* ---------- site header / nav ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(247, 244, 238, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line-structure);
+}
+
+.site-header__inner {
+  max-width: var(--content-landing);
+  margin: 0 auto;
+  padding: var(--sp-4) var(--sp-6);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--sp-4) var(--sp-6);
-  border-bottom: 1px solid var(--ink-06);
-  background: var(--paper);
+  gap: var(--sp-4);
 }
 
-.wordmark {
+.site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-md);
-  letter-spacing: 0.01em;
   color: var(--ink);
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
+  flex: none;
 }
 
-.wordmark::before {
-  content: '';
-  width: 3px;
-  height: 1.1em;
-  border-radius: 2px;
-  background: var(--field);
+.site-brand__mark {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--field);
+  border-radius: var(--radius-sm);
+  background: transparent;
   flex: none;
+  position: relative;
+}
+
+.site-brand__mark::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--cyan);
+  opacity: 0.65;
+}
+
+.site-brand__mark::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background: var(--line-diagram);
+  transform: translateY(-50%);
+}
+
+.site-brand__mark--light {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+}
+
+.site-brand__mark--light::before {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.site-brand__mark--light::after {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.site-nav {
+  display: none;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+@media (min-width: 768px) {
+  .site-nav {
+    display: flex;
+  }
+
+  .site-nav-toggle {
+    display: none;
+  }
+}
+
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+.site-nav__link {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.site-nav__link:hover {
+  color: var(--ink);
+}
+
+.btn--nav {
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--text-sm);
+  height: auto;
+  box-shadow: none;
+}
+
+.site-nav-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius);
+  background: var(--paper-overlay);
+  cursor: pointer;
+}
+
+.site-nav-toggle__bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--ink);
+  border-radius: 1px;
+}
+
+.site-nav-panel {
+  padding: var(--sp-4) var(--sp-6) var(--sp-6);
+  border-top: 1px solid var(--ink-06);
+  background: var(--paper-raised);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.site-nav-panel[hidden] {
+  display: none;
+}
+
+.site-nav-panel__link {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-md);
+  color: var(--ink);
+  text-decoration: none;
+  padding: var(--sp-2) 0;
+}
+
+/* ---------- site footer ---------- */
+
+.site-footer {
+  background: var(--field-deep);
+  color: rgba(255, 255, 255, 0.88);
+  padding: var(--sp-12) var(--sp-6) var(--sp-8);
+  margin-top: auto;
+}
+
+.site-footer__inner {
+  max-width: var(--content-landing);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-8);
+}
+
+.site-footer__brand {
+  max-width: 24rem;
+}
+
+.site-footer__name {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  margin: var(--sp-3) 0 var(--sp-2);
+}
+
+.site-footer__tagline {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+}
+
+.site-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  font-size: var(--text-sm);
+}
+
+.site-footer__links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.site-footer__links a:hover {
+  color: #fff;
+}
+
+.site-footer__legal {
+  max-width: var(--content-landing);
+  margin: var(--sp-8) auto 0;
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .step-indicator {
@@ -81,20 +300,7 @@ a {
   border: 1px solid rgba(63, 95, 115, 0.15);
   border-radius: var(--radius-sm);
   padding: var(--sp-1) var(--sp-3);
-}
-
-main {
-  padding: var(--sp-6) var(--sp-4) var(--sp-12);
-}
-
-.page-intake main,
-.page-address main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 3.75rem);
-  padding-top: var(--sp-6);
-  padding-bottom: var(--sp-8);
+  flex: none;
 }
 
 .col-narrow {
@@ -130,11 +336,12 @@ main {
 .btn--primary {
   padding: var(--sp-4) var(--sp-6);
   font-size: var(--text-md);
-  box-shadow: 0 1px 2px rgba(23, 35, 43, 0.12);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 var(--line-structure);
 }
 
 .btn--primary:hover {
-  box-shadow: 0 4px 12px rgba(36, 59, 74, 0.22);
+  box-shadow: 0 4px 16px rgba(36, 59, 74, 0.18);
 }
 
 .btn--secondary {
@@ -189,7 +396,7 @@ input[type='number'] {
   font-size: var(--text-md);
   color: var(--ink);
   background: var(--paper-raised);
-  border: 1px solid var(--stone);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius);
   padding: var(--sp-3) var(--sp-4);
   width: 100%;

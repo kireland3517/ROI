@@ -1,5 +1,25 @@
 {# Decorative product imagery — CSS/SVG only, aria-hidden, no stock photos. #}
 
+{% macro hero_asset_stack() %}
+<div class="hero-asset-stack" aria-hidden="true">
+  <div class="hero-asset-stack__frame">
+    <div class="asset-veil" aria-hidden="true"></div>
+  </div>
+  <div class="hero-asset-stack__preview">
+    {{ plan_preview('visual-panel--stacked') }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro band_asset_composition(modifier='visual-panel--promo') %}
+<div class="band-asset-composition" aria-hidden="true">
+  <img src="/static/assets/blueprint-vertical-structure.png" alt=""
+       class="band-asset-composition__structure" width="400" height="600"
+       loading="lazy" decoding="async">
+  {{ plan_preview(modifier) }}
+</div>
+{% endmacro %}
+
 {% macro icon_parcel(class_name='icon-parcel') %}
 <svg class="{{ class_name }}" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
   <rect x="2.5" y="4" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.25"/>

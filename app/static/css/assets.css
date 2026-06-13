@@ -1,0 +1,246 @@
+/* Blueprint PNG assets — subtle material, never full-page wallpaper. */
+
+/* ---------- shared asset treatments ---------- */
+
+.asset-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, var(--paper) 0%, rgba(247, 244, 238, 0.72) 42%, rgba(247, 244, 238, 0.35) 100%);
+}
+
+.asset-veil--paper {
+  background:
+    linear-gradient(to bottom, rgba(247, 244, 238, 0.92) 0%, rgba(247, 244, 238, 0.55) 55%, rgba(247, 244, 238, 0.88) 100%);
+}
+
+/* ---------- landing hero: wide blueprint + stacked preview ---------- */
+
+.landing-hero__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.landing-hero__bg-texture {
+  position: absolute;
+  inset: 0;
+  background-image: var(--asset-minimal);
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.07;
+  filter: saturate(0.6);
+}
+
+.landing-hero__bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent 80%);
+  opacity: 0.85;
+}
+
+.hero-asset-stack {
+  position: relative;
+  min-height: 28rem;
+}
+
+.hero-asset-stack__frame {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--field-tint);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 62% 42%;
+}
+
+@media (min-width: 960px) {
+  .hero-asset-stack__frame {
+    background-image: var(--asset-hero-wide);
+  }
+}
+
+.hero-asset-stack__frame .asset-veil {
+  background:
+    linear-gradient(118deg, var(--paper) 8%, rgba(247, 244, 238, 0.55) 38%, rgba(247, 244, 238, 0.2) 62%, rgba(221, 231, 236, 0.35) 100%);
+}
+
+.hero-asset-stack__preview {
+  position: relative;
+  z-index: 2;
+  margin: var(--sp-12) var(--sp-5) var(--sp-5);
+}
+
+/* ---------- sample band: vertical structure + preview ---------- */
+
+.band-asset-composition {
+  position: relative;
+  min-height: 22rem;
+}
+
+.band-asset-composition__structure {
+  position: absolute;
+  top: -8%;
+  right: -6%;
+  width: min(52%, 14rem);
+  height: auto;
+  max-height: 110%;
+  object-fit: contain;
+  object-position: top right;
+  opacity: 0.22;
+  filter: saturate(0.75);
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .band-asset-composition__structure {
+    right: 0;
+    width: min(58%, 16rem);
+    opacity: 0.26;
+  }
+}
+
+.band-asset-composition .visual-panel {
+  position: relative;
+  z-index: 1;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .band-asset-composition .visual-panel {
+    margin: 0 0 0 auto;
+  }
+}
+
+/* ---------- value row: minimal texture wash ---------- */
+
+.landing-value {
+  position: relative;
+}
+
+.landing-value::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--asset-minimal);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.045;
+  filter: saturate(0.5);
+  pointer-events: none;
+}
+
+.landing-value .landing-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- steps: square motif anchor ---------- */
+
+.landing-steps {
+  position: relative;
+}
+
+.landing-steps__motif {
+  position: absolute;
+  top: var(--sp-8);
+  right: var(--sp-6);
+  width: 7rem;
+  height: auto;
+  opacity: 0.14;
+  filter: saturate(0.65);
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .landing-steps__motif {
+    display: block;
+  }
+}
+
+/* ---------- report: advisory document accents ---------- */
+
+.report-header-panel .report-header__content {
+  position: relative;
+  z-index: 1;
+}
+
+.report-header__structure {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(38%, 9rem);
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: top right;
+  opacity: 0.16;
+  filter: saturate(0.7);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 559px) {
+  .report-header__structure {
+    display: none;
+  }
+}
+
+.report-section--textured::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--asset-minimal);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.035;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.report-section--textured {
+  position: relative;
+}
+
+.report-section--textured > * {
+  position: relative;
+  z-index: 1;
+}
+
+.report-glance-motif {
+  position: absolute;
+  bottom: var(--sp-4);
+  right: var(--sp-4);
+  width: 4.5rem;
+  height: auto;
+  opacity: 0.12;
+  filter: saturate(0.65);
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 700px) {
+  .report-glance-motif {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-asset-stack__frame,
+  .band-asset-composition__structure,
+  .landing-steps__motif,
+  .report-header__structure,
+  .report-glance-motif {
+    filter: none;
+  }
+}

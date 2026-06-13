@@ -18,6 +18,11 @@
 
   <header class="report-header report-header-panel">
 
+    <img src="/static/assets/blueprint-vertical-structure.png" alt=""
+         class="report-header__structure" width="320" height="480" loading="lazy" decoding="async">
+
+    <div class="report-header__content">
+
     <p class="report-eyebrow">Seller Action Plan</p>
 
     <h1>Your prioritized fix list</h1>
@@ -56,6 +61,8 @@
 
     {% endif %}
 
+    </div>
+
   </header>
 
   {% include "partials/_chip_legend_compact.html" %}
@@ -76,7 +83,10 @@
 
 
 
-  <section class="report-section plan-summary" aria-labelledby="glance-heading">
+  <section class="report-section plan-summary report-section-panel report-section--textured" aria-labelledby="glance-heading">
+
+    <img src="/static/assets/blueprint-square-motif.png" alt=""
+         class="report-glance-motif" width="120" height="120" loading="lazy" decoding="async">
 
     <h2 id="glance-heading">Plan at a glance</h2>
 
@@ -290,7 +300,7 @@
 
 
 
-  <section class="report-section" aria-labelledby="dns-heading">
+  <section class="report-section report-section--dns" aria-labelledby="dns-heading">
 
     <h2 id="dns-heading">Don't spend money here</h2>
 

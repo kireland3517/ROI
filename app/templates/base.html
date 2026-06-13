@@ -3,23 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Your Seller Action Plan{% endblock %}</title>
+  <title>{% block title %}Seller Action Plan{% endblock %}</title>
   <link rel="stylesheet" href="/static/fonts/fonts.css">
   <link rel="stylesheet" href="/static/css/tokens.css">
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/intake.css">
+  <link rel="stylesheet" href="/static/css/landing.css">
   <link rel="stylesheet" href="/static/css/visual-system.css">
+  <link rel="stylesheet" href="/static/css/assets.css">
   <link rel="stylesheet" href="/static/css/report.css">
 </head>
 <body{% block body_class %}{% endblock %}>
-  <header class="topbar">
-    <a class="wordmark" href="/">Seller Action Plan</a>
-    {% block step_indicator %}{% endblock %}
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="site-brand" href="/">
+        <span class="site-brand__mark" aria-hidden="true"></span>
+        <span class="site-brand__text">Seller Action Plan</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <div class="site-nav__links">
+          <a class="site-nav__link" href="/#how-it-works">How it works</a>
+          <a class="site-nav__link" href="/#sample-output">Sample output</a>
+        </div>
+        {% block step_indicator %}{% endblock %}
+        <a class="btn btn--nav" href="/#hero-form">Get your plan</a>
+      </nav>
+      <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
+        <span class="site-nav-toggle__bar"></span>
+        <span class="site-nav-toggle__bar"></span>
+      </button>
+    </div>
+    <div class="site-nav-panel" id="site-nav-panel" hidden>
+      <a class="site-nav-panel__link" href="/#how-it-works">How it works</a>
+      <a class="site-nav-panel__link" href="/#sample-output">Sample output</a>
+      <a class="btn btn--full btn--primary" href="/#hero-form">Get your plan</a>
+    </div>
   </header>
-  <main>
+  <main id="main-content">
     {% block content %}{% endblock %}
   </main>
+  {% block site_footer %}
+  {% include "partials/_site_footer.html" %}
+  {% endblock %}
   {% block scripts %}{% endblock %}
+  <script src="/static/js/site.js"></script>
 </body>
 </html>

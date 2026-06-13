@@ -1,39 +1,58 @@
 {% extends "base.html" %}
+{% from "partials/_intake_visuals.html" import issues_motif %}
 {% block title %}Know about any problems?{% endblock %}
+{% block body_class %} class="page-intake"{% endblock %}
 
 {% block step_indicator %}
 <span class="step-indicator">Optional</span>
 {% endblock %}
 
 {% block content %}
-<div class="col-narrow intake fade-slide">
-  <h1>Know about any problems?</h1>
-  <p class="why-line">Telling us makes your plan more specific. Skipping is fine —
-    your plan will simply note where we assumed instead of knew.</p>
+<div class="intake-page fade-slide">
+  <div class="intake-layout intake-layout--solo">
+    <div class="intake-main">
+      <header class="intake-intro">
+        <h1>Know about any problems?</h1>
+        <p class="why-line">Flag anything you already know about. Skipping is fine — we'll note where we assumed instead of knew.</p>
+      </header>
 
-  <form method="post" action="/intake/{{ session_id }}/issues" data-issues-form>
-    <div class="issue-grid">
-      {% for opt in options %}
-      <label class="issue-chip">
-        <input type="checkbox" name="issues" value="{{ opt.issue_key }}"
-               {% if opt.issue_key in selected %}checked{% endif %}>
-        {{ opt.label }}
-      </label>
-      {% endfor %}
+      <div class="intake-panel">
+        <form method="post" action="/intake/{{ session_id }}/issues" data-issues-form>
+          {% for group in issue_groups %}
+          <fieldset class="issue-group">
+            <legend class="issue-group__legend">{{ group.label }}</legend>
+            <div class="issue-grid">
+              {% for opt in group.options %}
+              <label class="issue-chip">
+                <input type="checkbox" name="issues" value="{{ opt.issue_key }}"
+                       {% if opt.issue_key in selected %}checked{% endif %}>
+                {{ opt.label }}
+              </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+          {% endfor %}
+
+          <label class="form-label" for="custom_issue">Something else?</label>
+          <p class="form-helper" id="custom-helper">Optional — a short note helps us tailor the plan.</p>
+          <input type="text" id="custom_issue" name="custom_issue" value="{{ custom_issue }}"
+                 aria-describedby="custom-helper"
+                 placeholder="Describe it briefly (optional)">
+
+          <button type="submit" class="btn btn--full btn--primary" data-issues-cta>
+            Nothing to add — build my plan
+          </button>
+          <div class="skip-row">
+            <button type="submit" class="btn-quiet" name="skip" value="1">Skip this step</button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <label class="fineprint" for="custom_issue">Something else?</label>
-    <input type="text" id="custom_issue" name="custom_issue" value="{{ custom_issue }}"
-           placeholder="Describe it briefly (optional)">
-
-    <p></p>
-    <button type="submit" class="btn btn--full" data-issues-cta>
-      Nothing to add — build my plan
-    </button>
-    <div class="skip-row">
-      <button type="submit" class="btn-quiet" name="skip" value="1">Skip this step</button>
-    </div>
-  </form>
+    <aside class="intake-visual">
+      {{ issues_motif() }}
+    </aside>
+  </div>
 </div>
 {% endblock %}
 

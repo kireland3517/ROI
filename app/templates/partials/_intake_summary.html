@@ -1,0 +1,38 @@
+{% macro intake_fact(label, value, chip=none) %}
+<div class="intake-fact">
+  <span class="intake-fact__label">{{ label }}</span>
+  <span class="intake-fact__value">{{ value }}</span>
+  {% if chip %}{{ chip }}{% endif %}
+</div>
+{% endmacro %}
+
+<section class="report-section" aria-labelledby="intake-summary-heading">
+  <h2 id="intake-summary-heading">What you told us</h2>
+  <p class="section-sub">Your answers shape what we recommend — and what we flag to skip.</p>
+
+  <div class="report-section-panel">
+    <div class="intake-summary-grid">
+      {{ intake_fact('Goal', plan.context.objective_label) }}
+      {{ intake_fact('Timeline', plan.context.timing_label ~ (' (assumed)' if plan.horizon.assumed else '')) }}
+      {{ intake_fact('Spend comfort', plan.context.spend_label if not plan.plan_summary.spend_unsure else 'Not set yet') }}
+    </div>
+
+    {% if plan.context.issue_labels or plan.context.custom_issue %}
+    <div class="issue-summary">
+      <h3 class="issue-summary__title">Known problems you flagged</h3>
+      {% if plan.context.issue_labels %}
+      <ul class="issue-summary__list">
+        {% for label in plan.context.issue_labels %}
+        <li><span class="chip chip--answer"><span class="dot"></span>Your answer</span> {{ label }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% if plan.context.custom_issue %}
+      <p class="issue-summary__custom"><span class="chip chip--answer"><span class="dot"></span>Your note</span> {{ plan.context.custom_issue }}</p>
+      {% endif %}
+    </div>
+    {% else %}
+    <p class="section-note">You didn't flag specific problems — the plan leans on standard pre-listing checks and notes where we assumed instead of knew.</p>
+    {% endif %}
+  </div>
+</section>

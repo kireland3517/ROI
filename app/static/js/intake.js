@@ -23,10 +23,15 @@
   if (suggestWrap && window.fetch) {
     var input = suggestWrap.querySelector('input');
     var list = suggestWrap.querySelector('.suggest-list');
+    var suggestStatus = document.querySelector('[data-suggest-status]');
     var items = [];
     var active = -1;
     var debounceTimer = null;
     var controller = null;
+
+    var setSuggestStatus = function (message) {
+      if (suggestStatus) suggestStatus.textContent = message || '';
+    };
 
     var close = function () {
       list.hidden = true;
@@ -61,7 +66,11 @@
 
     var render = function (suggestions) {
       close();
-      if (!suggestions.length) return;
+      if (!suggestions.length) {
+        setSuggestStatus('No suggestions right now — type your full address and we\u2019ll validate it when you continue.');
+        return;
+      }
+      setSuggestStatus('');
       items = suggestions;
       suggestions.forEach(function (text, i) {
         var li = document.createElement('li');
@@ -85,6 +94,7 @@
       var query = input.value.trim();
       if (query.length < 4) {
         close();
+        setSuggestStatus('');
         return;
       }
       debounceTimer = window.setTimeout(function () {

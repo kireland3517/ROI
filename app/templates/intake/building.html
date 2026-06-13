@@ -1,17 +1,84 @@
 {% extends "base.html" %}
+{% from "partials/_intake_visuals.html" import building_motif %}
 {% block title %}Building your plan{% endblock %}
+{% block body_class %} class="page-intake"{% endblock %}
 
 {% block content %}
-<div class="col-narrow building fade-slide">
-  <h1>Building your plan</h1>
-  <ul class="status-lines" data-status-lines>
-    <li>Checking county property records&hellip;</li>
-    <li>Sizing actions against your timeline&hellip;</li>
-    <li>Sorting what's worth it from what isn't&hellip;</li>
-  </ul>
-  <noscript>
-    <p><a class="btn" href="/plan/{{ session_id }}">See my plan</a></p>
-  </noscript>
+<div class="intake-page building-page fade-slide">
+  <div class="intake-layout intake-layout--split">
+    <div class="intake-main">
+      <header class="intake-intro">
+        <h1>Building your plan</h1>
+        <p class="why-line">Pulling together property records, your answers, and national cost estimates — usually just a few seconds.</p>
+      </header>
+
+      <div class="intake-panel building-panel">
+        <p class="form-helper panel-helper">Each step below is something we're doing right now. No guesswork about progress — we'll take you to the plan when it's ready.</p>
+
+        <ul class="building-steps" data-status-lines aria-live="polite">
+          <li>
+            <span class="building-steps__label">Property records</span>
+            <span class="building-steps__detail">Looking up county records for {{ building.address_display or 'your address' }}.</span>
+          </li>
+          <li>
+            <span class="building-steps__label">Your timeline</span>
+            <span class="building-steps__detail">
+              {%- if building.target_date -%}
+              Target list date {{ building.target_date | friendly_date }}.
+              {%- elif building.timing_label -%}
+              Listing window: {{ building.timing_label }}.
+              {%- else -%}
+              Using a default planning window until you set a date.
+              {%- endif -%}
+            </span>
+          </li>
+          <li>
+            <span class="building-steps__label">Your goal &amp; budget</span>
+            <span class="building-steps__detail">
+              {%- if building.objective_label -%}Goal: {{ building.objective_label }}.{% endif %}
+              {%- if building.spend_label -%} Spend comfort: {{ building.spend_label }}.{% else %} Spend comfort not set — we'll show all cost ranges.{% endif -%}
+            </span>
+          </li>
+          <li>
+            <span class="building-steps__label">Known problems</span>
+            <span class="building-steps__detail">
+              {%- if building.issue_count -%}
+              Factoring in {{ building.issue_count }} issue{{ '' if building.issue_count == 1 else 's' }} you flagged{% if building.issue_preview %} ({{ building.issue_preview | join(', ') }}{% if building.issue_count > 2 %}…{% endif %}){% endif %}.
+              {%- elif building.has_custom_issue -%}
+              Including your custom note about the property.
+              {%- elif building.issues_skipped -%}
+              You skipped this step — we'll note where we assumed instead of knew.
+              {%- else -%}
+              No specific problems flagged — standard pre-listing checks apply.
+              {%- endif -%}
+            </span>
+          </li>
+          <li>
+            <span class="building-steps__label">Market context</span>
+            <span class="building-steps__detail">
+              {%- if building.market_available -%}
+              Pulling nearby recorded sales for context only — not a home value estimate.
+              {%- else -%}
+              Local sale context isn't available for this market yet — your plan doesn't depend on it.
+              {%- endif -%}
+            </span>
+          </li>
+          <li>
+            <span class="building-steps__label">Priorities</span>
+            <span class="building-steps__detail">Sorting what to fix first, what to skip, and what won't fit your timeline.</span>
+          </li>
+        </ul>
+
+        <noscript>
+          <p class="form-helper"><a class="btn btn--primary" href="/plan/{{ session_id }}">See my plan</a></p>
+        </noscript>
+      </div>
+    </div>
+
+    <aside class="intake-visual">
+      {{ building_motif() }}
+    </aside>
+  </div>
 </div>
 {% endblock %}
 
@@ -24,11 +91,11 @@
   lines.forEach(function (line, index) {
     window.setTimeout(function () {
       line.classList.add('shown');
-    }, reduced ? 0 : 250 + index * 800);
+    }, reduced ? 0 : 200 + index * 600);
   });
 
   var started = Date.now();
-  var minimumMs = reduced ? 0 : 2400;
+  var minimumMs = reduced ? 0 : 2800;
   fetch('/plan/{{ session_id }}/generate', { method: 'POST' })
     .then(function () {
       var wait = Math.max(0, minimumMs - (Date.now() - started));
@@ -37,7 +104,6 @@
       }, wait);
     })
     .catch(function () {
-      // The plan route generates synchronously as a fallback.
       window.location.href = '/plan/{{ session_id }}';
     });
 })();

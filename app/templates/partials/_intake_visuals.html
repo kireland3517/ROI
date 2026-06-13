@@ -1,0 +1,169 @@
+{# Decorative product imagery — CSS/SVG only, aria-hidden, no stock photos. #}
+
+{% macro icon_parcel(class_name='icon-parcel') %}
+<svg class="{{ class_name }}" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+  <rect x="2.5" y="4" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.25"/>
+  <path d="M2.5 8.5h15M7.5 4v13M12.5 4v13" stroke="currentColor" stroke-width="0.75" opacity="0.45"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_check(class_name='icon-line') %}
+<svg class="{{ class_name }}" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_skip(class_name='icon-line') %}
+<svg class="{{ class_name }}" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_clock(class_name='icon-line') %}
+<svg class="{{ class_name }}" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.25"/>
+  <path d="M8 5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+</svg>
+{% endmacro %}
+
+{% macro plan_preview_body() %}
+    <div class="preview-context">
+      {{ icon_parcel() }}
+      <span class="preview-context__text">Matched to public property records</span>
+      <span class="preview-chip preview-chip--records"><span class="preview-chip__dot"></span>County records</span>
+    </div>
+
+    <div class="preview-horizon">
+      <div class="preview-horizon__marker">
+        {{ icon_clock('icon-line icon-line--gold') }}
+        <span>Target list date</span>
+      </div>
+
+      <article class="preview-card preview-card--urgent">
+        <span class="preview-card__seq">1</span>
+        <div class="preview-card__body">
+          <span class="preview-card__title">Repair roof leak</span>
+          <span class="preview-card__meta">Fix first · $2,400–$4,800</span>
+          <div class="preview-chips">
+            <span class="preview-chip preview-chip--answer"><span class="preview-chip__dot"></span>Your answer</span>
+            <span class="preview-chip preview-chip--estimate"><span class="preview-chip__dot"></span>Standard estimate</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="preview-card">
+        <span class="preview-card__seq">2</span>
+        <div class="preview-card__body">
+          <span class="preview-card__title">Service HVAC system</span>
+          <span class="preview-card__meta">Worth it before listing · $350–$650</span>
+          <div class="preview-chips">
+            <span class="preview-chip preview-chip--records"><span class="preview-chip__dot"></span>Property record</span>
+          </div>
+        </div>
+      </article>
+
+      <div class="preview-dns">
+        <span class="preview-dns__label">Do Not Spend</span>
+        <span class="preview-dns__title">Full kitchen remodel</span>
+        <span class="preview-dns__reason">Beyond your timeline — not worth starting now</span>
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro plan_preview(modifier='') %}
+<div class="visual-panel blueprint-bg{{ ' ' ~ modifier if modifier else '' }}" aria-hidden="true">
+  <div class="visual-panel__inner">
+    <p class="visual-eyebrow">Sample output</p>
+    <p class="visual-heading">Seller Action Plan</p>
+    {{ plan_preview_body() }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro step_motif(current, total) %}
+<div class="visual-panel visual-panel--compact blueprint-bg" aria-hidden="true">
+  <div class="visual-panel__inner">
+    <p class="visual-eyebrow">Your progress</p>
+    <ol class="step-rail">
+      {% for n in range(1, total + 1) %}
+      <li class="step-rail__item{% if n == current %} is-current{% elif n < current %} is-done{% endif %}">
+        <span class="step-rail__dot">{{ n }}</span>
+        <span class="step-rail__label">
+          {%- if n == 1 -%}Your goal
+          {%- elif n == 2 -%}Timeline
+          {%- else -%}Budget
+          {%- endif -%}
+        </span>
+      </li>
+      {% endfor %}
+    </ol>
+    <div class="motif-checklist">
+      <div class="motif-checklist__row">
+        {{ icon_check('icon-line icon-line--slate') }}
+        <span>Four questions, one clear plan</span>
+      </div>
+      <div class="motif-checklist__row">
+        {{ icon_check('icon-line icon-line--slate') }}
+        <span>Every recommendation sourced</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro issues_motif() %}
+<div class="visual-panel visual-panel--compact blueprint-bg" aria-hidden="true">
+  <div class="visual-panel__inner">
+    <p class="visual-eyebrow">How we use this</p>
+    <div class="motif-split">
+      <div class="motif-split__col motif-split__col--fix">
+        {{ icon_check('icon-line icon-line--slate') }}
+        <span class="motif-split__label">What to fix</span>
+        <span class="motif-split__desc">Moves up your prioritized list</span>
+      </div>
+      <div class="motif-split__col motif-split__col--skip">
+        {{ icon_skip('icon-line icon-line--muted') }}
+        <span class="motif-split__label">What to skip</span>
+        <span class="motif-split__desc">Flagged when not worth the spend</span>
+      </div>
+    </div>
+    <div class="preview-chips preview-chips--stack">
+      <span class="preview-chip preview-chip--answer"><span class="preview-chip__dot"></span>Your answer</span>
+      <span class="preview-chip preview-chip--assumed"><span class="preview-chip__dot"></span>Assumed if skipped</span>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro record_motif() %}
+<div class="visual-panel visual-panel--compact blueprint-bg" aria-hidden="true">
+  <div class="visual-panel__inner">
+    <p class="visual-eyebrow">Property lookup</p>
+    <div class="motif-record">
+      <div class="motif-record__icon">
+        {{ icon_parcel('icon-parcel icon-parcel--large') }}
+      </div>
+      <div class="motif-record__lines">
+        <span class="motif-record__line motif-record__line--wide"></span>
+        <span class="motif-record__line"></span>
+        <span class="motif-record__line"></span>
+      </div>
+    </div>
+    <div class="preview-chips preview-chips--stack">
+      <span class="preview-chip preview-chip--records"><span class="preview-chip__dot"></span>County records</span>
+      <span class="preview-chip preview-chip--estimate"><span class="preview-chip__dot"></span>Standard estimates</span>
+    </div>
+    <p class="visual-caption">We combine records with your answers — never the other way around.</p>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro building_motif() %}
+<div class="visual-panel visual-panel--building blueprint-bg" aria-hidden="true">
+  <div class="visual-panel__inner">
+    <p class="visual-eyebrow">Building your plan</p>
+    <p class="visual-heading">Seller Action Plan</p>
+    {{ plan_preview_body() }}
+  </div>
+</div>
+{% endmacro %}

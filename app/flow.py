@@ -80,3 +80,18 @@ def next_step(current: str) -> str | None:
     if idx + 1 < len(QUESTION_ORDER):
         return QUESTION_ORDER[idx + 1]
     return None
+
+
+def answer_label(step_key: str, value: str) -> str | None:
+    """Human label for a stored answer value, or None if unset."""
+    if not value:
+        return None
+    config = QUESTIONS.get(step_key)
+    if config is None:
+        return None
+    if value == config.get("skip_value"):
+        return "Not set yet"
+    for opt in config["options"]:
+        if opt["value"] == value:
+            return opt["label"]
+    return None

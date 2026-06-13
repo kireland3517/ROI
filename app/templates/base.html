@@ -9,9 +9,10 @@
   <link rel="stylesheet" href="/static/css/base.css">
   <link rel="stylesheet" href="/static/css/components.css">
   <link rel="stylesheet" href="/static/css/intake.css">
+  <link rel="stylesheet" href="/static/css/visual-system.css">
   <link rel="stylesheet" href="/static/css/report.css">
 </head>
-<body>
+<body{% block body_class %}{% endblock %}>
   <header class="topbar">
     <a class="wordmark" href="/">Seller Action Plan</a>
     {% block step_indicator %}{% endblock %}

@@ -16,6 +16,7 @@ SEEDS_DIR = Path(__file__).resolve().parent
 
 CATALOG_FILE = SEEDS_DIR / "catalog_v0.csv"
 ISSUE_PICKER_FILE = SEEDS_DIR / "issue_picker_v0.csv"
+ISSUE_PICKER_GROUPS_FILE = SEEDS_DIR / "issue_picker_groups_v0.csv"
 DURATION_RULES_FILE = SEEDS_DIR / "duration_lead_time_rules_v1.csv"
 
 VALID_REVIEW_STATUSES = {
@@ -102,6 +103,16 @@ class IssueOption:
     issue_key: str
     label: str
     sort_order: int
+
+
+@dataclass(frozen=True)
+class IssueGroup:
+    """UI grouping for the issue picker — must cover every issue_picker row."""
+
+    group_id: str
+    label: str
+    sort_order: int
+    options: tuple[IssueOption, ...]
 
 
 def _validate_catalog_row(raw: dict, line_no: int) -> CatalogRow:
@@ -210,6 +221,78 @@ def load_issue_picker() -> tuple[IssueOption, ...]:
             IssueOption(issue_key=key, label=label, sort_order=int(raw.get("sort_order") or 0))
         )
     return tuple(sorted(options, key=lambda opt: opt.sort_order))
+
+
+@lru_cache(maxsize=1)
+def load_issue_picker_groups() -> tuple[IssueGroup, ...]:
+    """Load issue picker UI groups. Every picker key must appear exactly once.
+
+    When adding rows to issue_picker_v0.csv, update issue_picker_groups_v0.csv
+    in the same change — load fails loudly if they drift apart.
+    """
+    options = load_issue_picker()
+    by_key = {opt.issue_key: opt for opt in options}
+    rows = _read_csv(ISSUE_PICKER_GROUPS_FILE)
+    grouped: dict[str, dict] = {}
+    seen_keys: set[str] = set()
+
+    for line_no, raw in enumerate(rows, start=2):
+        group_id = (raw.get("group_id") or "").strip()
+        group_label = (raw.get("group_label") or "").strip()
+        issue_key = (raw.get("issue_key") or "").strip()
+        if not group_id or not group_label or not issue_key:
+            raise SeedValidationError(
+                f"{ISSUE_PICKER_GROUPS_FILE.name} line {line_no}: "
+                "missing group_id, group_label, or issue_key"
+            )
+        if issue_key not in by_key:
+            raise SeedValidationError(
+                f"{ISSUE_PICKER_GROUPS_FILE.name} line {line_no}: "
+                f"issue_key {issue_key!r} not in issue picker seed"
+            )
+        if issue_key in seen_keys:
+            raise SeedValidationError(
+                f"{ISSUE_PICKER_GROUPS_FILE.name} line {line_no}: "
+                f"duplicate issue_key {issue_key!r}"
+            )
+        seen_keys.add(issue_key)
+        try:
+            group_sort = int(raw.get("group_sort") or 0)
+        except ValueError as exc:
+            raise SeedValidationError(
+                f"{ISSUE_PICKER_GROUPS_FILE.name} line {line_no}: invalid group_sort"
+            ) from exc
+
+        bucket = grouped.setdefault(
+            group_id,
+            {"label": group_label, "sort_order": group_sort, "options": []},
+        )
+        if bucket["label"] != group_label or bucket["sort_order"] != group_sort:
+            raise SeedValidationError(
+                f"{ISSUE_PICKER_GROUPS_FILE.name} line {line_no}: "
+                f"group_id {group_id!r} has inconsistent label or sort"
+            )
+        bucket["options"].append(by_key[issue_key])
+
+    missing = set(by_key) - seen_keys
+    if missing:
+        raise SeedValidationError(
+            f"{ISSUE_PICKER_GROUPS_FILE.name} missing picker keys: "
+            f"{', '.join(sorted(missing))}"
+        )
+
+    groups = []
+    for group_id, data in grouped.items():
+        opts = tuple(sorted(data["options"], key=lambda opt: opt.sort_order))
+        groups.append(
+            IssueGroup(
+                group_id=group_id,
+                label=data["label"],
+                sort_order=data["sort_order"],
+                options=opts,
+            )
+        )
+    return tuple(sorted(groups, key=lambda g: g.sort_order))
 
 
 @lru_cache(maxsize=1)

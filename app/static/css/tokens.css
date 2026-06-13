@@ -1,22 +1,37 @@
-/* Design tokens — "the surveyor's report, made warm".
+/* Design tokens — calm editorial seller product.
    Palette roles, type roles, spacing scale. Define here, consume everywhere. */
 
 :root {
-  /* Palette roles */
-  --paper: #f7f7f4;
-  --paper-raised: #fffffd;
-  --ink: #20231f;
-  --ink-muted: #6b7066;
-  --ink-10: rgba(32, 35, 31, 0.1);
-  --ink-06: rgba(32, 35, 31, 0.06);
-  --field: #1e5743;        /* primary actions, selected, "go" */
-  --field-tint: #e7efeb;
-  --horizon: #b0762b;      /* timeline rail + date marker ONLY */
-  --horizon-tint: #f5ead9;
+  /* Surfaces */
+  --paper: #f7f4ee;
+  --paper-raised: #fffcf8;
+  --ink: #17232b;
+  --ink-muted: #556872;
+  --ink-10: rgba(23, 35, 43, 0.1);
+  --ink-06: rgba(23, 35, 43, 0.06);
+
+  /* Primary slate — actions, selection, focus, links */
+  --field: #3f5f73;
+  --field-deep: #243b4a;
+  --field-tint: #dde7ec;
+
+  /* Warm structure */
+  --stone: #d8c9b4;
+  --stone-tint: rgba(216, 201, 180, 0.45);
+
+  /* Timeline rail + date marker ONLY */
+  --horizon: #b8935a;
+  --horizon-tint: #f0e6d6;
+
+  /* Status */
   --urgent: #a8402f;
   --urgent-tint: #f6e7e4;
-  --caution: #9a7b1e;
-  --caution-tint: #f5efdc;
+  --caution: #8a6b1a;
+  --caution-tint: #fff4d8;
+
+  /* Elevation */
+  --shadow-soft: 0 4px 24px rgba(23, 35, 43, 0.08);
+  --shadow-panel: 0 1px 2px rgba(23, 35, 43, 0.05), 0 12px 40px rgba(23, 35, 43, 0.07);
 
   /* Type roles */
   --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
@@ -43,6 +58,8 @@
 
   --radius: 8px;
   --radius-sm: 4px;
+  --radius-lg: 12px;
   --content-narrow: 28rem;
   --content-wide: 44rem;
+  --content-intake: 56rem;
 }

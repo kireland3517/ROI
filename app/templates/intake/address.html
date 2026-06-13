@@ -1,30 +1,62 @@
-{% extends "base.html" %}
-{% block title %}Plan what to fix before you list{% endblock %}
-
-{% block content %}
-<div class="col-narrow address-hero fade-slide">
-  <h1>Plan what to fix before you list.</h1>
-  <p class="lede">Four questions. A plan in about two minutes. No account needed.</p>
-
-  {% if error %}
-  <div class="field-error" role="alert">{{ error }}</div>
-  {% endif %}
-
-  <form class="address-form" method="post" action="/intake/address" data-address-form>
-    <label class="fineprint" for="address">Property address</label>
-    <div class="suggest-wrap" data-suggest>
-      <input type="text" id="address" name="address" value="{{ address_value }}"
-             placeholder="123 Maple St, Springfield, IL 62704" autocomplete="off"
-             role="combobox" aria-expanded="false" aria-controls="address-suggestions"
-             aria-autocomplete="list" autofocus required>
-      <ul class="suggest-list" id="address-suggestions" role="listbox"
-          aria-label="Address suggestions" hidden></ul>
-    </div>
-    <button type="submit" class="btn btn--full">Find my property</button>
-  </form>
-
-  <p class="fineprint">We only use your address to look up public property records.</p>
-</div>
-{% endblock %}
-
-{% block scripts %}<script src="/static/js/intake.js"></script>{% endblock %}
+{% extends "base.html" %}
+{% from "partials/_intake_visuals.html" import plan_preview %}
+{% block title %}Plan what to fix before you list{% endblock %}
+{% block body_class %} class="page-intake page-address"{% endblock %}
+
+{% block content %}
+<div class="intake-page address-page fade-slide">
+  <div class="intake-layout intake-layout--split">
+    <div class="intake-main">
+      <header class="intake-intro intake-intro--center">
+        <h1>Plan what to fix before you list.</h1>
+        <p class="intake-lede">Four questions. A clear plan in about two minutes. No account needed.</p>
+      </header>
+
+      <div class="intake-panel">
+        {% if error %}
+        <div class="field-error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form class="address-form" method="post" action="/intake/address" data-address-form>
+          <label class="form-label" for="address">Property address</label>
+          <p class="form-helper" id="address-helper">Start with your street number and city — we'll match public records after you confirm.</p>
+          <div class="suggest-wrap" data-suggest>
+            <input type="text" id="address" name="address" value="{{ address_value }}"
+                   placeholder="123 Maple St, Springfield, IL 62704" autocomplete="off"
+                   aria-describedby="address-helper suggest-status"
+                   role="combobox" aria-expanded="false" aria-controls="address-suggestions"
+                   aria-autocomplete="list" autofocus required>
+            <ul class="suggest-list" id="address-suggestions" role="listbox"
+                aria-label="Address suggestions" hidden></ul>
+          </div>
+          <p class="form-helper form-helper--status" id="suggest-status" data-suggest-status aria-live="polite"></p>
+          <button type="submit" class="btn btn--full btn--primary">Find my property</button>
+        </form>
+
+        <p class="trust-line">We only use your address to look up public property records — never sold or shared.</p>
+      </div>
+
+      <ul class="value-row" aria-label="What you get">
+        <li class="value-item">
+          <span class="value-item__label">Prioritized fixes</span>
+          <span class="value-item__desc">What to tackle first, and what to skip</span>
+        </li>
+        <li class="value-item">
+          <span class="value-item__label">Timeline-aware</span>
+          <span class="value-item__desc">Matched to when you plan to list</span>
+        </li>
+        <li class="value-item">
+          <span class="value-item__label">Sourced estimates</span>
+          <span class="value-item__desc">Every number labeled with its source</span>
+        </li>
+      </ul>
+    </div>
+
+    <aside class="intake-visual">
+      {{ plan_preview() }}
+    </aside>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="/static/js/intake.js"></script>{% endblock %}

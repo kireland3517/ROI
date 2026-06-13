@@ -61,13 +61,27 @@ def test_issue_picker_keys_match_catalog_triggers():
         assert option.issue_key in triggered
 
 
+def test_issue_picker_groups_cover_all_options():
+    from app.seeds import load_issue_picker_groups
+
+    options = {opt.issue_key for opt in load_issue_picker()}
+    grouped = {
+        opt.issue_key
+        for group in load_issue_picker_groups()
+        for opt in group.options
+    }
+    assert options == grouped
+
+
 def test_duration_rules_load_with_valid_statuses():
     rows = load_duration_rules()
     assert len(rows) >= 30
 
 
 def test_no_market_literals_in_seed_files():
-    for path in (CATALOG_FILE, ISSUE_PICKER_FILE):
+    from app.seeds import ISSUE_PICKER_GROUPS_FILE
+
+    for path in (CATALOG_FILE, ISSUE_PICKER_FILE, ISSUE_PICKER_GROUPS_FILE):
         text = path.read_text(encoding="utf-8").lower()
         for banned in BANNED_STRINGS:
             assert banned not in text, f"{banned!r} found in {path.name}"

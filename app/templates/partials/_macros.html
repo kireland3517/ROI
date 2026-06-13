@@ -23,7 +23,7 @@
 {% endmacro %}
 
 {% macro action_card(item) %}
-<details class="card{% if item.timeline_status == 'urgent' %} card--urgent{% endif %}"
+<details class="card card--action{% if item.timeline_status == 'urgent' %} card--urgent{% endif %}"
          data-action-card id="item-{{ item.id }}">
   <summary>
     <div class="card-face">
@@ -34,7 +34,11 @@
       <div class="card-meta">
         <span class="badge badge--{{ item.tier }}">{{ item.tier_badge }}</span>
         <span class="cost-band">{{ item.cost_band }}</span>
-        <span>{{ item.diy.label }}</span>
+        <span class="card-meta__duration">~{{ item.total_days }} day{{ 's' if item.total_days != 1 else '' }}</span>
+        <span class="card-meta__diy">{{ item.diy.label }}</span>
+      </div>
+      <div class="card-meta card-meta--chips">
+        {{ confidence_chip(item) }}
         <span class="summary-hint">
           <span class="closed-label">Why this made your list</span>
           <span class="open-label">Close</span>
@@ -54,9 +58,6 @@
       ~{{ item.total_days }} day{{ 's' if item.total_days != 1 else '' }} including lead time
       · {{ item.duration_label }}
     </p>
-    <div class="chip-row">
-      {{ confidence_chip(item) }}
-    </div>
     {% if item.diy.reason %}
     <p><strong>{{ item.diy.label }}:</strong> {{ item.diy.reason }}.</p>
     {% endif %}
@@ -68,4 +69,3 @@
   </div>
 </details>
 {% endmacro %}
-

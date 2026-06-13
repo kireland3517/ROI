@@ -1,48 +1,85 @@
 {% extends "base.html" %}
+{% from "partials/_intake_visuals.html" import step_motif %}
 {% block title %}{{ q.title }}{% endblock %}
+{% block body_class %} class="page-intake"{% endblock %}
 
 {% block step_indicator %}
 <span class="step-indicator">Step {{ q.step }} of {{ total_steps }}</span>
 {% endblock %}
 
 {% block content %}
-<div class="col-narrow intake fade-slide">
-  <h1>{{ q.title }}</h1>
-  <p class="why-line">{{ q.why }}</p>
+<div class="intake-page fade-slide">
+  <div class="intake-layout intake-layout--solo">
+    <div class="intake-main">
+      <header class="intake-intro">
+        <div class="intake-progress" role="progressbar"
+             aria-valuenow="{{ q.step }}" aria-valuemin="1" aria-valuemax="{{ total_steps }}"
+             aria-label="Question {{ q.step }} of {{ total_steps }}">
+          <div class="intake-progress__track">
+            <div class="intake-progress__fill" style="width: {{ (q.step / total_steps * 100) | round }}%;"></div>
+          </div>
+          <span class="intake-progress__label">Question {{ q.step }} of {{ total_steps }}</span>
+        </div>
+        <h1>{{ q.title }}</h1>
+        <p class="why-line">{{ q.why }}</p>
+      </header>
 
-  <form method="post" action="/intake/{{ session_id }}/q/{{ step_key }}" data-question-form>
-    <div class="options" role="radiogroup" aria-label="{{ q.title }}">
-      {% for opt in q.options %}
-      <label class="option">
-        <input type="radio" name="value" value="{{ opt.value }}"
-               {% if current_value == opt.value %}checked{% endif %}>
-        <span class="option-label">{{ opt.label }}</span>
-        <span class="option-desc">{{ opt.desc }}</span>
-      </label>
-      {% endfor %}
+      <div class="intake-panel">
+        {% if step_key == 'objective' %}
+        <p class="form-helper panel-helper">Pick the option closest to your situation. You can change your answers anytime before you list.</p>
+        {% elif step_key == 'timing' %}
+        <p class="form-helper panel-helper">We'll size repairs to this window and flag projects that won't fit in time.</p>
+        {% elif step_key == 'spend' %}
+        <p class="form-helper panel-helper">This sets your comfort zone — we show cost ranges for everything and won't push you past it.</p>
+        {% endif %}
+
+        <form method="post" action="/intake/{{ session_id }}/q/{{ step_key }}" data-question-form>
+          <fieldset class="options-fieldset">
+            <legend class="form-label options-fieldset__legend">Choose one</legend>
+            <div class="options" role="radiogroup" aria-label="{{ q.title }}">
+              {% for opt in q.options %}
+              <label class="option">
+                <input type="radio" name="value" value="{{ opt.value }}"
+                       {% if current_value == opt.value %}checked{% endif %}>
+                <span class="option-label">{{ opt.label }}</span>
+                <span class="option-desc">{{ opt.desc }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+
+          {% if q.allow_date %}
+          <div class="date-panel">
+            <button type="button" class="btn-quiet date-panel__toggle" data-date-toggle aria-expanded="false">
+              I have a specific list date
+            </button>
+            <div class="date-reveal" data-date-reveal {% if not current_date %}hidden{% endif %}>
+              <label class="form-label" for="target_date">Target list date</label>
+              <p class="form-helper" id="date-helper">Optional — overrides the timing band above for a sharper plan.</p>
+              <input type="date" id="target_date" name="target_date" value="{{ current_date }}"
+                     aria-describedby="date-helper">
+            </div>
+          </div>
+          {% endif %}
+
+          <button type="submit" class="btn btn--full btn--primary">Continue</button>
+
+          {% if q.skippable %}
+          <div class="skip-panel">
+            <button type="submit" class="btn-quiet" name="value" value="{{ q.skip_value }}">
+              {{ q.skip_label }}
+            </button>
+            <p class="form-helper skip-panel__note">{{ q.skip_note }}</p>
+          </div>
+          {% endif %}
+        </form>
+      </div>
     </div>
 
-    {% if q.allow_date %}
-    <button type="button" class="btn-quiet" data-date-toggle aria-expanded="false">
-      I have a specific date
-    </button>
-    <div class="date-reveal" data-date-reveal {% if not current_date %}hidden{% endif %}>
-      <label class="fineprint" for="target_date">Target list date</label>
-      <input type="date" id="target_date" name="target_date" value="{{ current_date }}">
-    </div>
-    {% endif %}
-
-    <button type="submit" class="btn btn--full">Continue</button>
-
-    {% if q.skippable %}
-    <div class="skip-row">
-      <button type="submit" class="btn-quiet" name="value" value="{{ q.skip_value }}">
-        {{ q.skip_label }}
-      </button>
-      <p class="fineprint">{{ q.skip_note }}</p>
-    </div>
-    {% endif %}
-  </form>
+    <aside class="intake-visual">
+      {{ step_motif(q.step, total_steps) }}
+    </aside>
+  </div>
 </div>
 {% endblock %}
 

@@ -19,7 +19,7 @@ from app.adapters.smarty import (
     MissingCredentialsError,
     get_adapter,
 )
-from app.seeds import load_issue_picker
+from app.seeds import load_issue_picker, load_issue_picker_groups
 
 load_dotenv()
 
@@ -50,6 +50,34 @@ def _session_or_home(session_id: str):
     if session is None:
         return None, RedirectResponse("/", status_code=303)
     return session, None
+
+
+def _building_context(session: dict) -> dict:
+    """Plain-language summary for the building screen — display only."""
+    from app.seeds import issue_labels
+
+    address = session.get("address") or {}
+    answers = session.get("answers") or {}
+    labels = issue_labels()
+    issues = session.get("issues") or []
+    custom = (session.get("custom_issue") or "").strip()
+    market = market_context.build_market_context(
+        address.get("state", ""), address.get("zip", "")
+    )
+
+    return {
+        "address_display": address.get("display", ""),
+        "address_verified": address.get("provider") == "smarty",
+        "objective_label": flow.answer_label("objective", answers.get("objective", "")),
+        "timing_label": flow.answer_label("timing", answers.get("timing_band", "")),
+        "spend_label": flow.answer_label("spend", answers.get("spend_band", "")),
+        "target_date": (answers.get("target_date") or "").strip() or None,
+        "issue_count": len(issues),
+        "issue_preview": [labels[k] for k in issues[:2]],
+        "has_custom_issue": bool(custom),
+        "issues_skipped": bool(session.get("issues_submitted")) and not issues and not custom,
+        "market_available": bool(market.get("available")),
+    }
 
 
 # ---------------------------------------------------------------- intake
@@ -194,7 +222,7 @@ def issue_picker(request: Request, session_id: str):
         "intake/issues.html",
         {
             "session_id": session_id,
-            "options": load_issue_picker(),
+            "issue_groups": load_issue_picker_groups(),
             "selected": set(session["issues"]),
             "custom_issue": session.get("custom_issue", ""),
         },
@@ -228,7 +256,10 @@ def building(request: Request, session_id: str):
     if redirect:
         return redirect
     return templates.TemplateResponse(
-        request, "intake/building.html", {"session_id": session_id}
+        request, "intake/building.html", {
+            "session_id": session_id,
+            "building": _building_context(session),
+        }
     )
 
 

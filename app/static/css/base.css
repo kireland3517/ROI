@@ -48,25 +48,53 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: var(--sp-4) var(--sp-6);
+  border-bottom: 1px solid var(--ink-06);
+  background: var(--paper);
 }
 
 .wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--text-sm);
-  letter-spacing: 0.04em;
+  font-size: var(--text-md);
+  letter-spacing: 0.01em;
   color: var(--ink);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.wordmark::before {
+  content: '';
+  width: 3px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: var(--field);
+  flex: none;
 }
 
 .step-indicator {
   font-family: var(--font-utility);
   font-size: var(--text-xs);
-  color: var(--ink-muted);
+  color: var(--field-deep);
+  background: var(--field-tint);
+  border: 1px solid rgba(63, 95, 115, 0.15);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-3);
 }
 
 main {
-  padding: var(--sp-6) var(--sp-4) var(--sp-18);
+  padding: var(--sp-6) var(--sp-4) var(--sp-12);
+}
+
+.page-intake main,
+.page-address main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 3.75rem);
+  padding-top: var(--sp-6);
+  padding-bottom: var(--sp-8);
 }
 
 .col-narrow {
@@ -92,10 +120,42 @@ main {
   padding: var(--sp-3) var(--sp-6);
   cursor: pointer;
   text-decoration: none;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
 }
 
 .btn:hover {
-  filter: brightness(1.08);
+  background: var(--field-deep);
+}
+
+.btn--primary {
+  padding: var(--sp-4) var(--sp-6);
+  font-size: var(--text-md);
+  box-shadow: 0 1px 2px rgba(23, 35, 43, 0.12);
+}
+
+.btn--primary:hover {
+  box-shadow: 0 4px 12px rgba(36, 59, 74, 0.22);
+}
+
+.btn--secondary {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-md);
+  color: var(--field-deep);
+  background: var(--paper);
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-6);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.btn--secondary:hover {
+  background: var(--field-tint);
+  border-color: var(--field);
 }
 
 .btn--full {
@@ -129,10 +189,47 @@ input[type='number'] {
   font-size: var(--text-md);
   color: var(--ink);
   background: var(--paper-raised);
-  border: 1px solid var(--ink-10);
+  border: 1px solid var(--stone);
   border-radius: var(--radius);
   padding: var(--sp-3) var(--sp-4);
   width: 100%;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+input[type='text']:hover,
+input[type='date']:hover,
+input[type='number']:hover {
+  border-color: var(--ink-muted);
+}
+
+input[type='text']:focus,
+input[type='date']:focus,
+input[type='number']:focus {
+  outline: none;
+  border-color: var(--field);
+  box-shadow: 0 0 0 3px var(--field-tint);
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  margin-bottom: var(--sp-2);
+}
+
+.form-helper {
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  color: var(--ink-muted);
+  margin: 0 0 var(--sp-2);
+}
+
+.form-helper--status {
+  min-height: 1.25rem;
+  margin-top: var(--sp-2);
+  margin-bottom: 0;
 }
 
 .field-error {

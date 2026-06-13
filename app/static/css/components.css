@@ -26,7 +26,7 @@
   background: var(--ink-muted);
 }
 
-.chip--answer .dot { background: var(--field); }
+.chip--answer .dot { background: var(--field-deep); }
 .chip--records .dot { background: var(--ink); }
 .chip--estimate .dot { background: var(--ink-muted); }
 .chip--assumed .dot { background: var(--caution); }
@@ -54,6 +54,93 @@
   flex-wrap: wrap;
   gap: var(--sp-2);
   margin: var(--sp-2) 0;
+}
+
+.chip-row-helper {
+  margin: var(--sp-2) 0 var(--sp-3);
+}
+
+/* ---------- chip legend (visible help) ---------- */
+
+.chip-legend {
+  margin-bottom: var(--sp-5);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--ink-06);
+}
+
+.chip-legend__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--field-deep);
+  margin: 0 0 var(--sp-3);
+}
+
+.chip-legend__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.chip-legend__list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.chip-legend__list .chip {
+  flex: none;
+}
+
+.chip-legend__hint {
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  margin: var(--sp-3) 0 0;
+  line-height: 1.45;
+}
+
+.chip-legend--compact {
+  margin: 0 0 var(--sp-8);
+  padding: var(--sp-4);
+  background: var(--field-tint);
+  border: 1px solid rgba(63, 95, 115, 0.12);
+  border-radius: var(--radius);
+}
+
+.chip-legend--compact .chip-legend__title {
+  margin-bottom: var(--sp-2);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chip-legend__compact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+}
+
+.chip-legend__compact-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  line-height: 1.35;
+}
+
+.chip-legend__compact-list .chip {
+  flex: none;
 }
 
 /* ---------- timeline status labels ---------- */
@@ -104,16 +191,17 @@
 
 .badge--listing_readiness {
   background: var(--field-tint);
-  color: var(--field);
+  color: var(--field-deep);
 }
 
 /* ---------- cards ---------- */
 
 .card {
   background: var(--paper-raised);
-  border: 1px solid var(--ink-10);
+  border: 1px solid var(--stone);
   border-radius: var(--radius);
   padding: var(--sp-4);
+  box-shadow: var(--shadow-soft);
 }
 
 @media (min-width: 700px) {
@@ -188,6 +276,27 @@ details.card > summary:focus-visible {
   gap: var(--sp-3);
   font-family: var(--font-utility);
   font-size: var(--text-sm);
+}
+
+.card-meta--chips {
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--sp-1);
+}
+
+.card-meta__duration,
+.card-meta__diy {
+  color: var(--ink-muted);
+}
+
+.card--action > summary {
+  padding: var(--sp-4);
+}
+
+@media (min-width: 700px) {
+  .card--action > summary {
+    padding: var(--sp-5);
+  }
 }
 
 .cost-band {

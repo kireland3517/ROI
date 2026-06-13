@@ -1,24 +1,51 @@
 {% extends "base.html" %}
+{% from "partials/_intake_visuals.html" import record_motif %}
 {% block title %}Confirm your property{% endblock %}
+{% block body_class %} class="page-intake"{% endblock %}
 
 {% block content %}
-<div class="col-narrow intake fade-slide">
-  <h1>Is this your property?</h1>
+<div class="intake-page fade-slide">
+  <div class="intake-layout intake-layout--solo">
+    <div class="intake-main">
+      <header class="intake-intro">
+        <h1>Is this your property?</h1>
+        <p class="why-line">We standardized your address before looking up public records. Confirm it's right — or go back and fix it.</p>
+      </header>
 
-  <div class="address-card">
-    <span class="addr">{{ address.display }}</span>
-    {% if address.provider == 'smarty' %}
-    <span class="chip chip--records"><span class="dot"></span>USPS-standardized</span>
-    {% else %}
-    <span class="chip chip--records"><span class="dot"></span>Standardized — formatting check</span>
-    {% endif %}
-  </div>
+      <div class="intake-panel">
+        <p class="form-helper panel-helper">This is the address we'll use for county property records and your plan. It should match what buyers will see when you list.</p>
 
-  <form method="post" action="/intake/{{ session_id }}/confirm">
-    <button type="submit" class="btn btn--full">Yes, that's my property</button>
-  </form>
-  <div class="skip-row">
-    <a class="btn-quiet" href="/">Edit address</a>
+        <div class="confirm-address-card">
+          <div class="confirm-address-card__header">
+            <span class="form-label">Standardized address</span>
+            {% if address.provider == 'smarty' %}
+            <span class="chip chip--records"><span class="dot"></span>USPS-standardized</span>
+            {% else %}
+            <span class="chip chip--assumed"><span class="dot"></span>Formatting check only</span>
+            {% endif %}
+          </div>
+          <span class="confirm-address-card__addr">{{ address.display }}</span>
+          {% if address.provider == 'smarty' %}
+          <p class="confirm-address-card__trust">Verified against USPS delivery standards — not a property inspection or appraisal.</p>
+          {% else %}
+          <p class="confirm-address-card__trust">Formatting check only — we verified the address structure, not USPS delivery standards.</p>
+          {% endif %}
+        </div>
+
+        <form method="post" action="/intake/{{ session_id }}/confirm" class="confirm-actions">
+          <button type="submit" class="btn btn--full btn--primary">Yes, that's my property</button>
+        </form>
+
+        <div class="confirm-correction">
+          <p class="form-helper">Wrong address?</p>
+          <a class="btn btn--full btn--secondary" href="/">Edit address</a>
+        </div>
+      </div>
+    </div>
+
+    <aside class="intake-visual">
+      {{ record_motif() }}
+    </aside>
   </div>
 </div>
 {% endblock %}

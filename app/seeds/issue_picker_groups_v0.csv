@@ -1,0 +1,15 @@
+group_id,group_label,group_sort,issue_key
+water,Water & moisture,1,roof_leak
+water,Water & moisture,1,water_stains
+water,Water & moisture,1,plumbing_leak
+water,Water & moisture,1,mold
+systems,Systems,2,hvac_old
+systems,Systems,2,water_heater_old
+systems,Systems,2,electrical_issues
+systems,Systems,2,smoke_detectors
+exterior,Exterior & wear,3,broken_window
+exterior,Exterior & wear,3,caulking_drafts
+exterior,Exterior & wear,3,gutters
+exterior,Exterior & wear,3,deck_wear
+exterior,Exterior & wear,3,driveway_cracks
+exterior,Exterior & wear,3,pests

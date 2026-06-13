@@ -1,0 +1,50 @@
+<section class="report-section" aria-labelledby="assumptions-heading">
+  <h2 id="assumptions-heading">Assumptions and confidence</h2>
+  <p class="section-sub">Where we filled gaps, we say so — and you can change your answers anytime.</p>
+
+  <div class="report-section-panel">
+    {% include "partials/_chip_legend.html" %}
+    <ul class="assumption-list">
+      {% if 'timing_assumed' in plan.assumptions %}
+      <li>
+        <span class="chip chip--assumed"
+              data-explainer="You weren't sure about timing, so we planned for 3–6 months. Change your answers anytime.">
+          <span class="dot"></span>Assumed timing</span>
+        <span>We planned for a 3–6 month window until you set a firmer date.</span>
+      </li>
+      {% endif %}
+      {% if 'spend_unsure' in plan.assumptions %}
+      <li>
+        <span class="chip chip--assumed"
+              data-explainer="You haven't set a spend comfort yet. Cost bands are shown for everything — you choose what fits.">
+          <span class="dot"></span>Spend not set</span>
+        <span>Cost ranges are shown for all actions — you decide what fits your budget.</span>
+      </li>
+      {% endif %}
+      {% if 'no_condition_input' in plan.assumptions %}
+      <li>
+        <span class="chip chip--assumed"
+              data-explainer="You didn't flag any known problems, so condition-specific repairs aren't in this plan yet.">
+          <span class="dot"></span>No condition input yet</span>
+        <span>Without known problems, condition-specific repairs may be missing from this plan.</span>
+      </li>
+      {% endif %}
+      {% if 'facts_fallback' in plan.assumptions %}
+      <li>
+        <span class="chip chip--assumed"
+              data-explainer="County records were unavailable. Property details and this plan lean on what you told us.">
+          <span class="dot"></span>County records unavailable</span>
+        <span>Property details lean on your entries until county records are available.</span>
+      </li>
+      {% endif %}
+      {% if not plan.assumptions %}
+      <li class="assumption-list__clear">
+        <span class="chip chip--records"><span class="dot"></span>High confidence inputs</span>
+        <span>You set your goal, timeline, and spend — and we pulled property records successfully.</span>
+      </li>
+      {% endif %}
+    </ul>
+
+    <p class="section-note">Cost bands are national standard estimates (v1.0) unless a chip says otherwise — not contractor quotes or value estimates.</p>
+  </div>
+</section>

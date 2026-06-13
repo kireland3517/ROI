@@ -9,7 +9,8 @@
     not an estimate of your home's value.
   </p>
 
-  <div class="facts-row">
+  <div class="report-section-panel">
+  <div class="facts-row facts-row--market">
     <div class="fact"><b>{{ market_context.comp_count }}</b><span>Recorded sales</span></div>
     <div class="fact"><b>{{ market_context.median_price }}</b><span>Median sale</span></div>
     <div class="fact"><b>{{ market_context.price_band }}</b><span>Middle 50% of sales</span></div>
@@ -30,9 +31,10 @@
       <span class="dot"></span>{{ market_context.support_label }}</span>
   </div>
 
-  <p class="fineprint">These are recorded sales near you, shown for context.
+  <p class="section-note">These are recorded sales near you, shown for context.
     They are not an appraisal, an estimate of your home's value, or a
     prediction of what any project returns.</p>
+  </div>
 
   {% else %}
   <p class="section-sub">Local sale-price calibration isn't available for your
